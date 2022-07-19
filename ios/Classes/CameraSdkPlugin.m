@@ -1,4 +1,6 @@
 #import "CameraSdkPlugin.h"
+#import "FLFibriCheckView.h"
+#import "FLFibriCheckView.m"
 
 @implementation CameraSdkPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
@@ -7,6 +9,10 @@
             binaryMessenger:[registrar messenger]];
   CameraSdkPlugin* instance = [[CameraSdkPlugin alloc] init];
   [registrar addMethodCallDelegate:instance channel:channel];
+    
+      FLFibriCheckViewFactory* flFibriCheckViewFactory =
+    [[FLFibriCheckViewFactory alloc] initWithMessenger:registrar.messenger];
+  [registrar registerViewFactory:flFibriCheckViewFactory withId:@"FLFibriCheckView"];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
