@@ -1,8 +1,7 @@
-#import "React/RCTViewManager.h"
-#import "RNTFibriCheckViewController.h"
+#import "FLFibriCheckViewController.h"
 
-@interface RNFibriCheckViewManager : RCTViewManager
+@interface FLFibriCheckViewManager : NSObject
 
-@property (nonatomic, strong) RNTFibriCheckViewController *fibriCheckViewController;
+@property (nonatomic, strong) FLFibriCheckViewController *fibriCheckViewController;
 
 @end

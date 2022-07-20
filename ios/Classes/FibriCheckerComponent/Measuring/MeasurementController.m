@@ -80,6 +80,7 @@
 
     self.dispatchQueue = dispatch_queue_create("MeasureControllerDispatchQueue", DISPATCH_QUEUE_SERIAL);
 
+    NSLog(@"We're getting there!");
     [self startCamera];
 }
 
@@ -101,6 +102,8 @@
 #pragma mark - Private API
 
 - (ImageProcessorConfig*)configImageProcessor {
+    NSLog(@"configImageProcessor");
+    NSLog(@"maxYValue: %lu", self.maxYValue);
     return [[ImageProcessorConfig alloc] initWithRowSize:self.quadrantRows
                                                  colSize:self.quadrantCols
                                                     maxY:self.maxYValue

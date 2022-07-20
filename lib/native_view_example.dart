@@ -8,7 +8,7 @@ class IOSCompositionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // This is used in the platform side to register the view.
-    const String viewType = 'FLFibriCheckView';
+    const String viewType = 'FLFibriCheckViewController';
     // Pass parameters to the platform side.
     final Map<String, dynamic> creationParams = <String, dynamic>{"frame": "1"};
 

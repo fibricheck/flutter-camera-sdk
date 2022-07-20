@@ -1,9 +1,6 @@
 #import <UIKit/UIKit.h>
 #import <Flutter/Flutter.h>
-
-@interface FLFibriCheckViewFactory : NSObject <FlutterPlatformViewFactory>
-- (instancetype)initWithMessenger:(NSObject<FlutterBinaryMessenger>*)messenger;
-@end
+#import "Measurement.h"
 
 @protocol FibriCheckViewDelegate <NSObject>
 - (void) fibriCheckViewDidSetSampleTime;
@@ -21,7 +18,7 @@
 - (void) startMeasurement;
 @end
 
-@interface FLFibriCheckView : NSObject <FlutterPlatformView> {
+@interface FLFibriCheckView : UIView {
   float min;
   float max;
   float delta;
@@ -53,6 +50,20 @@
 @property (weak, nonatomic) UIColor *lineColor;
 @property (weak, nonatomic) UIColor *graphBackgroundColor;
 @property (nonatomic) NSInteger lineThickness;
+
+@property (nonatomic, copy) void (^onFingerDetected)(void);
+@property (nonatomic, copy) void (^onFingerRemoved)(void);
+@property (nonatomic, copy) void (^onHeartBeat)(NSUInteger);
+@property (nonatomic, copy) void (^onPulseDetected)(void);
+@property (nonatomic, copy) void (^onCalibrationReady)(void);
+@property (nonatomic, copy) void (^onPulseDetectionTimeExpired)(void);
+@property (nonatomic, copy) void (^onFingerDetectionTimeExpired)(void);
+@property (nonatomic, copy) void (^onMovementDetected)(void);
+@property (nonatomic, copy) void (^onMeasurementStart)(void);
+@property (nonatomic, copy) void (^onMeasurementFinished)(void);
+@property (nonatomic, copy) void (^onMeasurementProcessed)(Measurement*);
+@property (nonatomic, copy) void (^onSampleReady)(double, double);
+@property (nonatomic, copy) void (^onTimeRemaining)(NSUInteger);
 
 // @property (nonatomic, copy) RCTBubblingEventBlock onFingerDetected;
 // @property (nonatomic, copy) RCTBubblingEventBlock onFingerRemoved;

@@ -24,8 +24,8 @@
 
  - (void)emitEventInternal:(NSNotification *)notification {
    NSLog(@"--------- Internal Event logged FEM -----------");
-   [self sendEventWithName:notification.name
-                      body:notification.userInfo];
+//    [self sendEventWithName:notification.name
+//                       withBody:notification.userInfo];
  }
 
  + (void)emitEventWithName:(NSString *)name andPayload:(NSDictionary *)payload {

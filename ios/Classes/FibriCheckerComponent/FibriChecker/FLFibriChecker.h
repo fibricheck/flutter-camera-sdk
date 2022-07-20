@@ -2,7 +2,7 @@
 
 @class Measurement;
 
-@interface FibriChecker : NSObject
+@interface FLFibriChecker : NSObject
 
 #pragma mark - Configuration
 

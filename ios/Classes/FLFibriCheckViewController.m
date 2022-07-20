@@ -1,12 +1,56 @@
 #import "FLFibriCheckViewController.h"
 #import "FLFibriCheckEventEmitter.h"
-#import "FibriCheckerComponent.h"
+#import "FibricheckerComponent/FibriCheckerComponent.h"
 
-@interface FLFibriCheckViewController ()
-@property (nonatomic, strong) FibriChecker *fibrichecker;
+@implementation FLFibriCheckViewControllerFactory {
+  NSObject<FlutterBinaryMessenger>* _messenger;
+}
+
+- (instancetype)initWithMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
+    NSLog(@"FLFibriCheckViewControllerFactory createWithFrame");
+  self = [super init];
+  if (self) {
+    _messenger = messenger;
+  }
+  return self;
+}
+
+- (NSObject<FlutterPlatformView>*)createWithFrame:(CGRect)frame
+                                   viewIdentifier:(int64_t)viewId
+                                        arguments:(id _Nullable)args {
+    NSLog(@"FLFibriCheckViewControllerFactory createWithFrame: %@", NSStringFromCGRect(frame));
+  return [[FLFibriCheckViewController alloc] initWithFrame:frame
+                              viewIdentifier:viewId
+                                   arguments:args
+                             binaryMessenger:_messenger];
+}
+
 @end
 
-@implementation FLFibriCheckViewController
+@interface FLFibriCheckViewController ()
+@property (nonatomic, strong) FLFibriChecker *fibrichecker;
+@end
+
+@implementation FLFibriCheckViewController{
+  UIView *_view;
+}
+
+- (instancetype)initWithFrame:(CGRect)frame
+               viewIdentifier:(int64_t)viewId
+                    arguments:(id _Nullable)args
+              binaryMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
+  NSLog(@"FLFibriCheckViewController initWithFrame: %@", NSStringFromCGRect(frame));
+
+  if (self = [super init]) {
+    _view = [[UIView alloc] init];
+  }
+  [self loadView];
+  return self;
+}
+
+- (UIView*)view {
+  return _view;
+}
 
 - (void)fibriCheckViewDidSetSampleTime {
     NSInteger sampleTime = ((FLFibriCheckView*)self.view).sampleTime;
@@ -59,9 +103,10 @@
 
 // MARK: - UI
 - (void)viewDidLoad {
-  [super viewDidLoad];
-  self.fibrichecker = [FibriChecker new];
+  //[super viewDidLoad];
+  self.fibrichecker = [FLFibriChecker new];
   [self addListeners];
+  [self startMeasurement];
 }
 
 - (void)startMeasurement {
@@ -70,15 +115,18 @@
 }
 
 - (void)loadView {
+      NSLog(@"loadView");
     FLFibriCheckView *customView = [[FLFibriCheckView alloc] init];
     customView.delegate = self;
-    self.view = customView;
+    _view = customView;
+
+    [self viewDidLoad];
 }
 
 - (void)drawGraphPoint:(double)value {
-  [((FLFibriCheckView*)self.view) addPoint:[NSNumber numberWithDouble:value]];
+  [((FLFibriCheckView*)_view) addPoint:[NSNumber numberWithDouble:value]];
   dispatch_async(dispatch_get_main_queue(), ^{
-    [((FLFibriCheckView*)self.view) setNeedsDisplay];
+    [(_view) setNeedsDisplay];
   });
 }
 
@@ -89,14 +137,14 @@
   self.fibrichecker.onMeasurementStart = ^{
     NSLog(@"Measurement start");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onMeasurementStart != nil) ((FLFibriCheckView*)weakSelf.view).onMeasurementStart(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onMeasurementStart != nil) ((FLFibriCheckView*)weakSelf.view).onMeasurementStart();
     });
   };
 
   self.fibrichecker.onMeasurementFinished = ^{
     NSLog(@"Measurement Finished");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onMeasurementFinished != nil) ((FLFibriCheckView*)weakSelf.view).onMeasurementFinished(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onMeasurementFinished != nil) ((FLFibriCheckView*)weakSelf.view).onMeasurementFinished();
     });
   };
 
@@ -109,60 +157,61 @@
   };
 
   self.fibrichecker.onSampleReady = ^(double ppg, double raw) {
+    NSLog(@"OnSample ready");
     BOOL drawGraph = ((FLFibriCheckView*)self.view).drawGraph;
     if(drawGraph) [weakSelf drawGraphPoint:ppg];
     NSDictionary *data = @{@"ppg":[NSNumber numberWithFloat:ppg], @"raw":[NSNumber numberWithFloat:raw]};
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onSampleReady != nil) ((FLFibriCheckView*)weakSelf.view).onSampleReady(data);
+        if(((FLFibriCheckView*)weakSelf.view).onSampleReady != nil) ((FLFibriCheckView*)weakSelf.view).onSampleReady(ppg, raw);
     });
   };
 
   self.fibrichecker.onCalibrationReady = ^{
     NSLog(@"Calibration Ready");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onCalibrationReady != nil) ((FLFibriCheckView*)weakSelf.view).onCalibrationReady(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onCalibrationReady != nil) ((FLFibriCheckView*)weakSelf.view).onCalibrationReady();
     });
   };
 
   self.fibrichecker.onFingerRemoved = ^{
     NSLog(@"Finger Removed");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onFingerRemoved != nil) ((FLFibriCheckView*)weakSelf.view).onFingerRemoved(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onFingerRemoved != nil) ((FLFibriCheckView*)weakSelf.view).onFingerRemoved();
     });
   };
 
   self.fibrichecker.onFingerDetected = ^{
     NSLog(@"Finger Detected");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onFingerDetected != nil) ((FLFibriCheckView*)weakSelf.view).onFingerDetected(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onFingerDetected != nil) ((FLFibriCheckView*)weakSelf.view).onFingerDetected();
     });
   };
 
   self.fibrichecker.onMovementDetected = ^{
     NSLog(@"Movement Detected");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onMovementDetected != nil) ((FLFibriCheckView*)weakSelf.view).onMovementDetected(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onMovementDetected != nil) ((FLFibriCheckView*)weakSelf.view).onMovementDetected();
     });
   };
 
   self.fibrichecker.onPulseDetected = ^{
     NSLog(@"Pulse Detected");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onPulseDetected != nil) ((FLFibriCheckView*)weakSelf.view).onPulseDetected(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onPulseDetected != nil) ((FLFibriCheckView*)weakSelf.view).onPulseDetected();
     });
   };
 
   self.fibrichecker.onPulseDetectionTimeExpired = ^{
     NSLog(@"Pulse Detection Time Expired");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onPulseDetectionTimeExpired != nil) ((FLFibriCheckView*)weakSelf.view).onPulseDetectionTimeExpired(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onPulseDetectionTimeExpired != nil) ((FLFibriCheckView*)weakSelf.view).onPulseDetectionTimeExpired();
     });
   };
 
   self.fibrichecker.onFingerDetectionTimeExpired = ^{
     NSLog(@"Finger Detection Time Expired");
     dispatch_async(dispatch_get_main_queue(), ^{
-        if(((FLFibriCheckView*)weakSelf.view).onFingerDetectionTimeExpired != nil) ((FLFibriCheckView*)weakSelf.view).onFingerDetectionTimeExpired(@{});
+        if(((FLFibriCheckView*)weakSelf.view).onFingerDetectionTimeExpired != nil) ((FLFibriCheckView*)weakSelf.view).onFingerDetectionTimeExpired();
     });
   };
 
