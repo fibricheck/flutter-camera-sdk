@@ -12,7 +12,7 @@
     
       FLFibriCheckViewControllerFactory* flFibriCheckViewControllerFactory =
     [[FLFibriCheckViewControllerFactory alloc] initWithMessenger:registrar.messenger];
-  [registrar registerViewFactory:flFibriCheckViewControllerFactory withId:@"FLFibriCheckViewController"];
+  [registrar registerViewFactory:flFibriCheckViewControllerFactory withId:@"fibricheckview"];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {

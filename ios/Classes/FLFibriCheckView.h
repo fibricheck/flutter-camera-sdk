@@ -44,11 +44,11 @@
 @property (nonatomic) NSInteger *fingerDetectionExpiryTime;
 @property (nonatomic) NSInteger *waitForStartRecordingSignal;
 @property (nonatomic) BOOL drawGraph;
+@property (nonatomic) BOOL drawBackground;
 
 @property (nonatomic) NSInteger stepIncrement;
 @property (nonatomic) NSInteger verticalOffset;
 @property (weak, nonatomic) UIColor *lineColor;
-@property (weak, nonatomic) UIColor *graphBackgroundColor;
 @property (nonatomic) NSInteger lineThickness;
 
 @property (nonatomic, copy) void (^onFingerDetected)(void);
@@ -85,5 +85,9 @@
 @property (nonatomic, retain) NSMutableArray *points;
 
 -(void) addPoint:(NSNumber *) newPoint;
+
+-(void) setGraphBackgroundColor:(UIColor *) graphBackgroundColor;
+
+-(void) setGraphLineColor:(UIColor *)graphLineColor;
 
 @end

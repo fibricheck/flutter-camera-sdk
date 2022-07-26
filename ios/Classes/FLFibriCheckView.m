@@ -1,11 +1,15 @@
 #import "FLFibriCheckView.h"
 
-@implementation FLFibriCheckView
+@implementation FLFibriCheckView{
+    UIColor *_graphBackgroundColor;
+    UIColor *_graphLineColor;
+}
 
 - (id)init {
-  self = [super init];
-  self.drawGraph = TRUE;
-  return self;
+    self = [super init];
+    self.drawGraph = false;
+    self.drawBackground = false;
+    return self;
 }
 
 - (void)didSetProps:(NSArray<NSString *> *)changedProps {
@@ -13,122 +17,114 @@
 }
 
 - (id)initWithFrame:(CGRect)frame {
-  self = [super initWithFrame:frame];
-  if (self) {
-    delta = 1;
-    self.stepIncrement = 2.5;
-    self.verticalOffset = 6;
-  }
-  return self;
+    self = [super initWithFrame:frame];
+    if (self) {
+        delta = 1;
+        self.stepIncrement = 2.5;
+        self.verticalOffset = 6;
+    }
+    return self;
 }
 
 - (void)drawRect:(CGRect)rect {
-  NSLog(@"FLFibriCheckView drawRect");
-  if(self.graphBackgroundColor) {
-    [self drawGraphArea];
-  }
-  [self drawGraphLine];
-}
-
--(void) drawGraphArea {
-  NSLog(@"FLFibriCheckView drawGraphArea");
-  if (_points.count != 0) {
-    float xpos = self.bounds.size.width;
-    float ypos = self.bounds.size.height - ([[_points objectAtIndex:0] floatValue] - min + (delta / 1000)) * (self.bounds.size.height / delta);
-    float baseLine = self.bounds.size.height;
-    unsigned int integer = 0;
-
+    [super drawRect:rect];
+    
     CGContextRef context=UIGraphicsGetCurrentContext();
-
-    NSScanner *scanner = [NSScanner scannerWithString:self.graphBackgroundColor];
-    [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
-    [scanner scanHexInt:&integer];
-    UIColor *color = [UIColor colorWithRed:((CGFloat) ((integer & 0xFF0000) >> 16))/255
-                                             green:((CGFloat) ((integer & 0xFF00) >> 8))/255
-                                              blue:((CGFloat) (integer & 0xFF))/255
-                                             alpha:1];
-
-    CGContextSetFillColorWithColor(context, color.CGColor);
-
-    CGContextBeginPath(context);
-    CGContextMoveToPoint(context, xpos, baseLine);
-    CGContextAddLineToPoint(context, xpos, ypos);
-
-    for (int i = 1; i < _points.count; i++) {
-      xpos -= _stepIncrement;
-      ypos = [[_points objectAtIndex:i] floatValue];
-
-      CGFloat graphPoint = (ypos - min + (delta / 1000)) * (self.bounds.size.height / delta);
-      CGContextAddLineToPoint(context, xpos, self.bounds.size.height - graphPoint);
-    };
-
-    CGContextAddLineToPoint(context, xpos - _stepIncrement, baseLine);
-    CGContextClosePath(context);
-    CGContextDrawPath(context, kCGPathFill);
-  }
-  NSLog(@"FLFibriCheckView drawGraphArea finished");
+    CGContextClearRect(context, self.bounds);
+    
+    [[UIColor whiteColor] setFill];
+    UIRectFill(rect);
+    
+    if(self.drawBackground)
+        [self drawGraphArea:context];
+    
+    if(self.drawGraph)
+        [self drawGraphLine:context];
 }
 
--(void) drawGraphLine {
-  if (_points.count != 0) {
-    float xpos = self.bounds.size.width;
-    float ypos = self.bounds.size.height - ([[_points objectAtIndex:0] floatValue] - min + (delta / 1000)) * (self.bounds.size.height / delta);
-    unsigned int integer = 0;
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextClearRect(context, self.bounds);
-    CGContextSetLineWidth(context, 2);
+// Can be removed?
+-(void) drawGraphArea:(CGContextRef)context {
+    if (_points.count != 0) {
+        float xpos = self.bounds.size.width;
+        float ypos = self.bounds.size.height - ([[_points objectAtIndex:0] floatValue] - min + (delta / 1000)) * (self.bounds.size.height / delta);
+        float baseLine = self.bounds.size.height;
+        unsigned int integer = 0;
+        
+        CGContextSetFillColorWithColor(context, _graphBackgroundColor.CGColor);
+        
+        CGContextBeginPath(context);
+        CGContextMoveToPoint(context, xpos, baseLine);
+        CGContextAddLineToPoint(context, xpos, ypos);
+        
+        for (int i = 1; i < _points.count; i++) {
+            xpos -= _stepIncrement;
+            ypos = [[_points objectAtIndex:i] floatValue];
+            
+            CGFloat graphPoint = (ypos - min + (delta / 1000)) * (self.bounds.size.height / delta);
+            CGContextAddLineToPoint(context, xpos, self.bounds.size.height - graphPoint);
+        };
+        
+        CGContextAddLineToPoint(context, xpos - _stepIncrement, baseLine);
+        CGContextClosePath(context);
+        CGContextDrawPath(context, kCGPathFill);
+    }
+}
 
-//    NSScanner *scanner = [NSScanner scannerWithString:self.lineColor];
-//    [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"#"]];
-//    [scanner scanHexInt:&integer];
-//    UIColor *color = [UIColor colorWithRed:((CGFloat) ((integer & 0xFF0000) >> 16))/255
-//                                             green:((CGFloat) ((integer & 0xFF00) >> 8))/255
-//                                              blue:((CGFloat) (integer & 0xFF))/255
-//                                             alpha:1];
-      
-    UIColor *color = [UIColor redColor];
-      
-    CGContextSetStrokeColorWithColor(context, color.CGColor);
+-(void) drawGraphLine:(CGContextRef)context{
+    if (_points.count != 0) {
+        float xpos = self.bounds.size.width;
+        float ypos = self.bounds.size.height - ([[_points objectAtIndex:0] floatValue] - min + (delta / 1000)) * (self.bounds.size.height / delta);
 
-    CGContextBeginPath(context);
-    CGContextMoveToPoint(context, xpos, ypos);
-
-    for (int i = 1; i < _points.count; i++) {
-      xpos -= _stepIncrement;
-      ypos = [[_points objectAtIndex:i] floatValue];
-
-      CGFloat graphPoint = (ypos - min + (delta / 1000)) * (self.bounds.size.height / delta);
-      CGContextAddLineToPoint(context, xpos, self.bounds.size.height - graphPoint);
-    };
-
-    CGContextStrokePath(context);
-  }
+        CGContextSetLineWidth(context, self.lineThickness);
+        
+        CGContextSetStrokeColorWithColor(context, _graphLineColor.CGColor);
+        
+        CGContextBeginPath(context);
+        CGContextMoveToPoint(context, xpos, ypos);
+        
+        for (int i = 1; i < _points.count; i++) {
+            xpos -= _stepIncrement;
+            ypos = [[_points objectAtIndex:i] floatValue];
+            
+            CGFloat graphPoint = (ypos - min + (delta / 1000)) * (self.bounds.size.height / delta);
+            CGContextAddLineToPoint(context, xpos, self.bounds.size.height - graphPoint);
+        };
+        
+        CGContextStrokePath(context);
+    }
 }
 
 -(void) addPoint:(NSNumber *) newPoint {
-  NSLog(@"add Point");
-  if (!_points) _points = [[NSMutableArray alloc] init];
-  [_points insertObject:newPoint atIndex:0];
-  while (_points.count > self.bounds.size.width / _stepIncrement) {
-    [_points removeLastObject];
-  }
-  min = 1000;
-  max = -1000;
-  for (int i = 1; i < _points.count; i++) {
-    if ([[_points objectAtIndex:i] floatValue] < min) {
-      min = [[_points objectAtIndex:i] floatValue];
-    } else if([[_points objectAtIndex:i] floatValue] > max) {
-      max = [[_points objectAtIndex:i] floatValue];
+    if (!_points) _points = [[NSMutableArray alloc] init];
+    [_points insertObject:newPoint atIndex:0];
+    while (_points.count > self.bounds.size.width / _stepIncrement) {
+        [_points removeLastObject];
     }
-  }
+    min = 1000;
+    max = -1000;
+    for (int i = 1; i < _points.count; i++) {
+        if ([[_points objectAtIndex:i] floatValue] < min) {
+            min = [[_points objectAtIndex:i] floatValue];
+        } else if([[_points objectAtIndex:i] floatValue] > max) {
+            max = [[_points objectAtIndex:i] floatValue];
+        }
+    }
+    
+    min -= _verticalOffset;
+    max += _verticalOffset;
+    
+    delta = max - min;
+    if (delta == 0 ) {
+        delta = 1;
+    }
+}
 
-  min -= _verticalOffset;
-  max += _verticalOffset;
+-(void) setGraphBackgroundColor:(UIColor *)graphBackgroundColor {
+    _graphBackgroundColor = graphBackgroundColor;
+}
 
-  delta = max - min;
-  if (delta == 0 ) {
-    delta = 1;
-  }
+-(void) setGraphLineColor:(UIColor *)graphLineColor {
+    _graphLineColor = graphLineColor;
 }
 
 - (void)setSampleTime:(NSInteger *)sampleTime {
@@ -177,7 +173,7 @@
 }
 
 - (void)dealloc {
-  self.points = nil;
+    self.points = nil;
 }
 
 @end

@@ -15,5 +15,6 @@
 - (UIView*)view;
 
 - (void)startMeasurement;
+- (UIColor*)colorFromHexString:(NSString *)hexString;
 
 @end
