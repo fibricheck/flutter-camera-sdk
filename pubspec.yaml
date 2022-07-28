@@ -1,5 +1,5 @@
 name: camera_sdk
-description: A new Flutter plugin project.
+description: The camera SDK is a PPG recording module that you can use in combination with the FibriCheck Flutter SDK.
 version: 0.0.1
 homepage:
 

@@ -149,7 +149,6 @@ class _FibriCheckViewState extends State<FibriCheckView> {
           creationParams: _creationParams,
           creationParamsCodec: const StandardMessageCodec(),
         );
-        break;
       default:
         throw UnsupportedError('Unsupported platform view');
     }

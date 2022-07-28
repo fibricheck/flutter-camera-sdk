@@ -12,10 +12,6 @@
     return self;
 }
 
-- (void)didSetProps:(NSArray<NSString *> *)changedProps {
-    [self.delegate startMeasurement];
-}
-
 - (id)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) {
@@ -42,13 +38,11 @@
         [self drawGraphLine:context];
 }
 
-// Can be removed?
 -(void) drawGraphArea:(CGContextRef)context {
     if (_points.count != 0) {
         float xpos = self.bounds.size.width;
         float ypos = self.bounds.size.height - ([[_points objectAtIndex:0] floatValue] - min + (delta / 1000)) * (self.bounds.size.height / delta);
         float baseLine = self.bounds.size.height;
-        unsigned int integer = 0;
         
         CGContextSetFillColorWithColor(context, _graphBackgroundColor.CGColor);
         
@@ -75,7 +69,7 @@
         float xpos = self.bounds.size.width;
         float ypos = self.bounds.size.height - ([[_points objectAtIndex:0] floatValue] - min + (delta / 1000)) * (self.bounds.size.height / delta);
 
-        CGContextSetLineWidth(context, self.lineThickness);
+        CGContextSetLineWidth(context, self.lineThickness / 4);
         
         CGContextSetStrokeColorWithColor(context, _graphLineColor.CGColor);
         
@@ -125,51 +119,6 @@
 
 -(void) setGraphLineColor:(UIColor *)graphLineColor {
     _graphLineColor = graphLineColor;
-}
-
-- (void)setSampleTime:(NSInteger *)sampleTime {
-    _sampleTime = sampleTime;
-    [self.delegate fibriCheckViewDidSetSampleTime];
-}
-
-- (void)setFlashEnabled:(BOOL)flashEnabled {
-    _flashEnabled = flashEnabled;
-    [self.delegate fibriCheckViewDidSetFlash];
-}
-
-- (void)setGravEnabled:(BOOL)gravEnabled {
-    _gravEnabled = gravEnabled;
-    [self.delegate fibriCheckViewDidSetGrav];
-}
-
-- (void)setGyroEnabled:(BOOL)gyroEnabled {
-    _gyroEnabled = gyroEnabled;
-    [self.delegate fibriCheckViewDidSetGyro];
-}
-
-- (void)setAccEnabled:(BOOL)accEnabled {
-    _accEnabled = accEnabled;
-    [self.delegate fibriCheckViewDidSetAcc];
-}
-
-- (void)setRotationEnabled:(BOOL)rotationEnabled {
-    _rotationEnabled = rotationEnabled;
-    [self.delegate fibriCheckViewDidSetRotation];
-}
-
-- (void)setMovementDetectionEnabled:(BOOL)movementDetectionEnabled {
-    _movementDetectionEnabled = movementDetectionEnabled;
-    [self.delegate fibriCheckViewDidSetMovementDetection];
-}
-
-- (void)setFingerDetectionExpiryTime:(NSInteger *)fingerDetectionExpiryTime {
-    _fingerDetectionExpiryTime = fingerDetectionExpiryTime;
-    [self.delegate fibriCheckViewDidSetFingerDetectionExpiryTime];
-}
-
-- (void)setWaitForStartRecordingSignal:(NSInteger *)waitForStartRecordingSignal {
-    _waitForStartRecordingSignal = waitForStartRecordingSignal;
-    [self.delegate fibriCheckViewDidSetWaitForStartRecordingSignal];
 }
 
 - (void)dealloc {

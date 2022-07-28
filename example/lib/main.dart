@@ -22,6 +22,9 @@ class _MyAppState extends State<MyApp> {
 
   bool _hasCameraPermission = false;
 
+  String _timeRemaining = "-";
+  String _heartBeat = "-";
+
   @override
   initState() {
     super.initState();
@@ -49,24 +52,68 @@ class _MyAppState extends State<MyApp> {
                     return const Text("Camera permission not granted");
                   }
 
-                  return FibriCheckView(
-                    fibriCheckViewProperties: FibriCheckViewProperties(
-                      flashEnabled: true,
-                      lineThickness: 4,
-                    ),
-                    onCalibrationReady: () => debugPrint("Flutter onCalibrationReady"),
-                    onFingerDetected: () => debugPrint("Flutter onFingerDetected"),
-                    onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
-                    onFingerRemoved: () => debugPrint("Flutter onFingerRemoved"),
-                    onHeartBeat: (heartbeat) => debugPrint("Flutter onHeartBeat $heartbeat"),
-                    onMeasurementFinished: () => debugPrint("Flutter onMeasurementFinished"),
-                    onMeasurementProcessed: (measurement) => debugPrint("Flutter onMeasurementProcessed $measurement"),
-                    onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
-                    onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
-                    onPulseDetected: () => debugPrint("Flutter onPulseDetected"),
-                    onPulseDetectionTimeExpired: () => debugPrint("Flutter onPulseDetectionTimeExpired"),
-                    onSampleReady: (ppg, raw) => debugPrint("Flutter onSampleReady $ppg $raw"),
-                    onTimeRemaining: (seconds) => debugPrint("Flutter onTimeRemaining $seconds"),
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+                            child: Builder(builder: (context) {
+                              if (_timeRemaining != "-1") {
+                                return Text("Time remaining: $_timeRemaining");
+                              } else {
+                                return const Text("Finished!");
+                              }
+                            }),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+                            child: Text("Heartbeat: $_heartBeat"),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 200,
+                        child: FibriCheckView(
+                          fibriCheckViewProperties: FibriCheckViewProperties(
+                            flashEnabled: true,
+                            lineThickness: 4,
+                          ),
+                          onCalibrationReady: () =>
+                              debugPrint("Flutter onCalibrationReady"),
+                          onFingerDetected: () =>
+                              debugPrint("Flutter onFingerDetected"),
+                          onFingerDetectionTimeExpired: () => debugPrint(
+                              "Flutter onFingerDetectionTimeExpired"),
+                          onFingerRemoved: () =>
+                              debugPrint("Flutter onFingerRemoved"),
+                          onHeartBeat: (heartbeat) => {
+                            debugPrint("Flutter onHeartBeat $heartbeat"),
+                            _heartBeat = heartbeat.toString(),
+                            setState(() {}),
+                          },
+                          onMeasurementFinished: () =>
+                              debugPrint("Flutter onMeasurementFinished"),
+                          onMeasurementProcessed: (measurement) => debugPrint(
+                              "Flutter onMeasurementProcessed $measurement"),
+                          onMeasurementStart: () =>
+                              debugPrint("Flutter onMeasurementStart"),
+                          onMovementDetected: () =>
+                              debugPrint("Flutter onMovementDetected"),
+                          onPulseDetected: () =>
+                              debugPrint("Flutter onPulseDetected"),
+                          onPulseDetectionTimeExpired: () =>
+                              debugPrint("Flutter onPulseDetectionTimeExpired"),
+                          onSampleReady: (ppg, raw) => {},
+                          //debugPrint("Flutter onSampleReady $ppg $raw"),
+                          onTimeRemaining: (seconds) => {
+                            debugPrint("Flutter onTimeRemaining $seconds"),
+                            _timeRemaining = seconds.toString(),
+                            setState(() {}),
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 },
               ),
