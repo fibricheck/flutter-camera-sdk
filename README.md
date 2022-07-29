@@ -1,7 +1,7 @@
 ---
 description: >-
   The camera SDK is a PPG recording module that you can use in combination with
-  the FibriCheck Javascript SDK. This page help you to get started with this
+  the FibriCheck Flutter SDK. This page help you to get started with this
   module.
 ---
 

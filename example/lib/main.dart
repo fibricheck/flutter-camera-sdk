@@ -4,6 +4,10 @@ import 'dart:async';
 
 import 'package:permission_handler/permission_handler.dart';
 
+import '0_design_system/fc_colors.dart';
+import '5_ui/widgets/fc_title.dart';
+import '5_ui/widgets/fc_metrics.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -24,6 +28,7 @@ class _MyAppState extends State<MyApp> {
 
   String _timeRemaining = "-";
   String _heartBeat = "-";
+  String _status = "Place your finger on the camera";
 
   @override
   initState() {
@@ -35,7 +40,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: FCColors.brokenWhite,
         appBar: AppBar(
+          backgroundColor: FCColors.green,
           title: const Text('Fibricheck example app'),
         ),
         body: Column(
@@ -45,44 +52,42 @@ class _MyAppState extends State<MyApp> {
                 future: _requestCameraPermission,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text("Requiring camera permission");
+                    return const DemoTitleWidget(
+                        title: "Requiring camera permission");
                   }
 
                   if (!_hasCameraPermission) {
-                    return const Text("Camera permission not granted");
+                    return const DemoTitleWidget(
+                        title: "Camera permission not granted");
                   }
-
                   return Column(
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(8, 16, 8, 8),
-                            child: Builder(builder: (context) {
-                              if (_timeRemaining != "-1") {
-                                return Text("Time remaining: $_timeRemaining");
-                              } else {
-                                return const Text("Finished!");
-                              }
-                            }),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.fromLTRB(8, 16, 8, 8),
-                            child: Text("Heartbeat: $_heartBeat"),
-                          ),
-                        ],
-                      ),
+                      DemoTitleWidget(title: _status),
                       Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top:
+                                BorderSide(color: FCColors.lightGray, width: 1),
+                            bottom:
+                                BorderSide(color: FCColors.lightGray, width: 1),
+                          ),
+                        ),
                         height: 200,
                         child: FibriCheckView(
                           fibriCheckViewProperties: FibriCheckViewProperties(
                             flashEnabled: true,
                             lineThickness: 4,
                           ),
-                          onCalibrationReady: () =>
-                              debugPrint("Flutter onCalibrationReady"),
-                          onFingerDetected: () =>
-                              debugPrint("Flutter onFingerDetected"),
+                          onCalibrationReady: () => {
+                            debugPrint("Flutter onCalibrationReady"),
+                            _status = "Recording heartbeat...",
+                            setState(() {}),
+                          },
+                          onFingerDetected: () => {
+                            debugPrint("Flutter onFingerDetected"),
+                            _status = "Detecting pulse...",
+                            setState(() {}),
+                          },
                           onFingerDetectionTimeExpired: () => debugPrint(
                               "Flutter onFingerDetectionTimeExpired"),
                           onFingerRemoved: () =>
@@ -92,20 +97,26 @@ class _MyAppState extends State<MyApp> {
                             _heartBeat = heartbeat.toString(),
                             setState(() {}),
                           },
-                          onMeasurementFinished: () =>
-                              debugPrint("Flutter onMeasurementFinished"),
+                          onMeasurementFinished: () => {
+                            debugPrint("Flutter onMeasurementFinished"),
+                            _status = "Measurement finished!",
+                            setState(() {}),
+                          },
                           onMeasurementProcessed: (measurement) => debugPrint(
                               "Flutter onMeasurementProcessed $measurement"),
                           onMeasurementStart: () =>
                               debugPrint("Flutter onMeasurementStart"),
                           onMovementDetected: () =>
                               debugPrint("Flutter onMovementDetected"),
-                          onPulseDetected: () =>
-                              debugPrint("Flutter onPulseDetected"),
+                          onPulseDetected: () => {
+                            debugPrint("Flutter onPulseDetected"),
+                            _status = "Calibrating...",
+                            setState(() {}),
+                          },
                           onPulseDetectionTimeExpired: () =>
                               debugPrint("Flutter onPulseDetectionTimeExpired"),
                           onSampleReady: (ppg, raw) => {},
-                          //debugPrint("Flutter onSampleReady $ppg $raw"),
+                          //debugPrint("Flutter onSampleReady $ppg $raw"), -> prints often. Only uncomment when data is relevant
                           onTimeRemaining: (seconds) => {
                             debugPrint("Flutter onTimeRemaining $seconds"),
                             _timeRemaining = seconds.toString(),
@@ -113,6 +124,8 @@ class _MyAppState extends State<MyApp> {
                           },
                         ),
                       ),
+                      DemoMetricsWidget(
+                          timeRemaining: _timeRemaining, heartBeat: _heartBeat)
                     ],
                   );
                 },

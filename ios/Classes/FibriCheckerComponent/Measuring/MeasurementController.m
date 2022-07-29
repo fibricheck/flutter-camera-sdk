@@ -146,8 +146,8 @@
 
 - (void)startCamera {
     self.session = [AVCaptureSession new];
-    self.camera = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-
+    self.camera = [AVCaptureDevice defaultDeviceWithDeviceType:AVCaptureDeviceTypeBuiltInWideAngleCamera mediaType:AVMediaTypeVideo position:AVCaptureDevicePositionBack];
+    
     NSError * error = nil;
     AVCaptureInput * cameraInput = [[AVCaptureDeviceInput alloc] initWithDevice:_camera error:&error];
     if (cameraInput) {
