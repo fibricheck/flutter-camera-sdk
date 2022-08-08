@@ -1,10 +1,12 @@
+import 'package:camera_sdk/fibri_check_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
-import 'package:camera_sdk/camera_sdk.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
@@ -16,35 +18,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
-  final _cameraSdkPlugin = CameraSdk();
+  Future<void>? _requestCameraPermission;
+
+  bool _hasCameraPermission = false;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
-    try {
-      platformVersion =
-          await _cameraSdkPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
+    _requestCameraPermission = _requestCameraPermissionImpl();
   }
 
   @override
@@ -52,12 +33,54 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Fibricheck example app'),
         ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+        body: Column(
+          children: [
+            Expanded(
+              child: FutureBuilder(
+                future: _requestCameraPermission,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Text("Requiring camera permission");
+                  }
+
+                  if (!_hasCameraPermission) {
+                    return const Text("Camera permission not granted");
+                  }
+
+                  return FibriCheckView(
+                    fibriCheckViewProperties: FibriCheckViewProperties(
+                      flashEnabled: true,
+                      lineThickness: 4,
+                    ),
+                    onCalibrationReady: () => debugPrint("Flutter onCalibrationReady"),
+                    onFingerDetected: () => debugPrint("Flutter onFingerDetected"),
+                    onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
+                    onFingerRemoved: () => debugPrint("Flutter onFingerRemoved"),
+                    onHeartBeat: (heartbeat) => debugPrint("Flutter onHeartBeat $heartbeat"),
+                    onMeasurementFinished: () => debugPrint("Flutter onMeasurementFinished"),
+                    onMeasurementProcessed: (measurement) => debugPrint("Flutter onMeasurementProcessed $measurement"),
+                    onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
+                    onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
+                    onPulseDetected: () => debugPrint("Flutter onPulseDetected"),
+                    onPulseDetectionTimeExpired: () => debugPrint("Flutter onPulseDetectionTimeExpired"),
+                    onSampleReady: (ppg, raw) => debugPrint("Flutter onSampleReady $ppg $raw"),
+                    onTimeRemaining: (seconds) => debugPrint("Flutter onTimeRemaining $seconds"),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  Future<void> _requestCameraPermissionImpl() async {
+    var result = await Permission.camera.request();
+
+    _hasCameraPermission = result.isGranted;
+    setState(() {});
   }
 }
