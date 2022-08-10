@@ -28,11 +28,40 @@ A FibriCheck Measurement consists of multiple phases:
 
 To install the Camera SDK, you will need to have access to the [Camera SDK git repository](https://github.com/fibricheck/flutter-camera-sdk).
 
+The package can be installed in the pubspec.yaml as a link to the git repository. Please reffer to the [official documententation](https://docs.flutter.dev/development/packages-and-plugins/using-packages) for referencing git repositories.
+
 ## Making your first recording
 
 ### Permissions
 
-The recording makes use of the device's camera. So to begin, you need to provide camera permissions. Check out https://pub.dev/packages/permission_handler or a similar package on how to accomplish this easily.
+The recording makes use of the device's camera. So to begin, you need to provide camera permissions. Check out [the permission_handler package](https://pub.dev/packages/permission_handler) or a similar package on how to accomplish this easily.
+
+**Also, don't forget the define these permissions:**
+
+#### Android
+
+Add&#x20;
+
+```
+<uses-permission android:name="android.permission.CAMERA" />
+```
+
+To the `AndroidManifest.xml` file
+
+For more information regarding Android permissions, check the [official Android documentation](https://developer.android.com/training/permissions/declaring).
+
+#### iOS
+
+Add&#x20;
+
+```
+<key>NSCameraUsageDescription</key>
+<string>Your own description of the purpose</string>
+```
+
+To the `Info.plist` file
+
+For more information regarding these iOS permissions, check the [official iOS documentation](https://developer.apple.com/documentation/avfoundation/cameras\_and\_media\_capture/requesting\_authorization\_for\_media\_capture\_on\_ios?language=objc).
 
 ### Widget
 
