@@ -61,11 +61,16 @@ class FibriCheckView extends StatefulWidget {
   _FibriCheckViewState createState() => _FibriCheckViewState();
 }
 
-class _FibriCheckViewState extends State<FibriCheckView> {
+class _FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObserver {
   // This is used in the platform side to register the view.
   static const String viewType = 'fibricheckview';
 
-  _FibriCheckViewState();
+  int _counter = 0;
+  Key? _key;
+
+  _FibriCheckViewState() {
+    _key = Key(_counter.toString());
+  }
 
   String get graphBackgroundColor => widget._fibriCheckViewProperties.graphBackgroundColor;
 
@@ -97,7 +102,7 @@ class _FibriCheckViewState extends State<FibriCheckView> {
 
   bool get waitForStartRecordingSignal => widget._fibriCheckViewProperties.waitForStartRecordingSignal;
 
-  late String _channelId;
+  String _channelId = '';
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
 
   FibriCheckViewEventController? _fibriCheckViewEventController;
@@ -105,18 +110,42 @@ class _FibriCheckViewState extends State<FibriCheckView> {
 
   @override
   void initState() {
-    var uuid = const Uuid();
-    _channelId = uuid.v1().toString();
-    _creationParams["channelId"] = _channelId;
+    _setupChannelId();
+
     super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     _fibriCheckViewEventController?.dispose();
+    _fibriCheckViewEventController = null;
+
     _fibriCheckViewMethodController?.resetModule();
+    _fibriCheckViewMethodController = null;
+
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _fibriCheckViewEventController?.dispose();
+      _fibriCheckViewEventController = null;
+
+      _fibriCheckViewMethodController?.resetModule();
+      _fibriCheckViewMethodController = null;
+
+      _counter++;
+      _key = Key(_counter.toString());
+      _setupChannelId();
+    } else if (state == AppLifecycleState.resumed) {
+      setState(() {});
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
@@ -126,6 +155,7 @@ class _FibriCheckViewState extends State<FibriCheckView> {
       case TargetPlatform.android:
         view = IgnorePointer(
           child: AndroidView(
+            key: _key,
             viewType: viewType,
             layoutDirection: TextDirection.ltr,
             onPlatformViewCreated: _onPlatformViewCreated,
@@ -136,6 +166,7 @@ class _FibriCheckViewState extends State<FibriCheckView> {
         break;
       case TargetPlatform.iOS:
         return UiKitView(
+          key: _key,
           viewType: viewType,
           layoutDirection: TextDirection.ltr,
           onPlatformViewCreated: _onPlatformViewCreated,
@@ -149,6 +180,12 @@ class _FibriCheckViewState extends State<FibriCheckView> {
     _setupProperties();
 
     return view;
+  }
+
+  void _setupChannelId() {
+    const uuid = Uuid();
+    _channelId = uuid.v1().toString();
+    _creationParams["channelId"] = _channelId;
   }
 
   Future<void> _onPlatformViewCreated(int id) async {
@@ -229,8 +266,8 @@ class FibriCheckViewEventController {
     var eventType = event[EVENT_TYPE];
     switch (eventType) {
       case EVENT_SAMPLE_READY:
-        var ppg = event["ppg"] as double;
-        var raw = event["raw"] as double;
+        final ppg = event["ppg"] as double;
+        final raw = event["raw"] as double;
 
         widget.onSampleReady(ppg, raw);
         break;
@@ -244,11 +281,11 @@ class FibriCheckViewEventController {
         widget.onCalibrationReady();
         break;
       case EVENT_HEARTBEAT:
-        var heartRate = event["heartRate"] as int;
+        final heartRate = event["heartRate"] as int;
         widget.onHeartBeat(heartRate);
         break;
       case EVENT_TIME_REMAINING:
-        var timeRemaining = event["seconds"] as int;
+        final timeRemaining = event["seconds"] as int;
         widget.onTimeRemaining(timeRemaining);
         break;
       case EVENT_MEASUREMENT_FINISHED:
@@ -270,7 +307,7 @@ class FibriCheckViewEventController {
         widget.onMovementDetected();
         break;
       case EVENT_MEASUREMENT_PROCESSED:
-        var measurementJson = event["measurement"] as String;
+        final measurementJson = event["measurement"] as String;
         widget.onMeasurementProcessed(measurementJson);
         break;
     }
@@ -301,6 +338,23 @@ class FibriCheckViewMethodController {
 
   final MethodChannel _channel;
 
+  // Backing fields
+  bool? _drawGraph;
+  bool? _drawBackground;
+  String? _lineColor;
+  int? _lineThickness;
+  String? _graphBackgroundColor;
+  int? _sampleTime;
+  bool? _accEnabled;
+  int? _fingerDetectionExpiryTime;
+  bool? _flashEnabled;
+  bool? _gravEnabled;
+  bool? _gyroEnabled;
+  bool? _movementDetectionEnabled;
+  bool? _rotationEnabled;
+  int? _pulseDetectionExpiryTime;
+  bool? _waitForStartRecordingSignal;
+
   FibriCheckViewMethodController._(String id)
       : _channel = MethodChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_method');
 
@@ -313,62 +367,122 @@ class FibriCheckViewMethodController {
   }
 
   Future<void> setDrawGraph(bool drawGraph) {
+    if (_drawGraph == drawGraph) return Future.value();
+
+    _drawGraph = drawGraph;
+
     return _channel.invokeMethod(SET_DRAWGRAPH, drawGraph);
   }
 
   Future<void> setDrawBackground(bool drawBackground) {
+    if (_drawBackground == drawBackground) return Future.value();
+
+    _drawBackground = drawBackground;
+
     return _channel.invokeMethod(SET_DRAWBACKGROUND, drawBackground);
   }
 
   Future<void> setLineColor(String lineColor) {
+    if (_lineColor == lineColor) return Future.value();
+
+    _lineColor = lineColor;
+
     return _channel.invokeMethod(SET_LINECOLOR, lineColor);
   }
 
   Future<void> setLineThickness(int lineThickness) {
+    if (_lineThickness == lineThickness) return Future.value();
+
+    _lineThickness = lineThickness;
+
     return _channel.invokeMethod(SET_LINETHICKNESS, lineThickness);
   }
 
   Future<void> setGraphBackgroundColor(String graphBackgroundColor) {
+    if (_graphBackgroundColor == graphBackgroundColor) return Future.value();
+
+    _graphBackgroundColor = graphBackgroundColor;
+
     return _channel.invokeMethod(SET_GRAPHBACKGROUNDCOLOR, graphBackgroundColor);
   }
 
   Future<void> setSampleTime(int sampleTime) {
+    if (_sampleTime == sampleTime) return Future.value();
+
+    _sampleTime = sampleTime;
+
     return _channel.invokeMethod(SET_SAMPLETIME, sampleTime);
   }
 
   Future<void> setAccEnabled(bool accEnabled) {
+    if (_accEnabled == accEnabled) return Future.value();
+
+    _accEnabled = accEnabled;
+
     return _channel.invokeMethod(SET_ACCENABLED, accEnabled);
   }
 
   Future<void> setFingerDetectionExpiryTime(int fingerDetectionExpiryTime) {
+    if (_fingerDetectionExpiryTime == fingerDetectionExpiryTime) return Future.value();
+
+    _fingerDetectionExpiryTime = fingerDetectionExpiryTime;
+
     return _channel.invokeMethod(SET_FINGERDETECTIONEXPIRYTIME, fingerDetectionExpiryTime);
   }
 
   Future<void> setFlashEnabled(bool flashEnabled) {
+    if (_flashEnabled == flashEnabled) return Future.value();
+
+    _flashEnabled = flashEnabled;
+
     return _channel.invokeMethod(SET_FLASHENABLED, flashEnabled);
   }
 
   Future<void> setGravEnabled(bool gravEnabled) {
+    if (_gravEnabled == gravEnabled) return Future.value();
+
+    _gravEnabled = gravEnabled;
+
     return _channel.invokeMethod(SET_GRAVENABLED, gravEnabled);
   }
 
   Future<void> setGyroEnabled(bool gyroEnabled) {
+    if (_gyroEnabled == gyroEnabled) return Future.value();
+
+    _gyroEnabled = gyroEnabled;
+
     return _channel.invokeMethod(SET_GYROENABLED, gyroEnabled);
   }
 
   Future<void> setMovementDetectionEnabled(bool movementDetectionEnabled) {
+    if (_movementDetectionEnabled == movementDetectionEnabled) return Future.value();
+
+    _movementDetectionEnabled = movementDetectionEnabled;
+
     return _channel.invokeMethod(SET_MOVEMENTDETECTIONENABLED, movementDetectionEnabled);
   }
 
   Future<void> setRotationEnabled(bool rotationEnabled) {
+    if (_rotationEnabled == rotationEnabled) return Future.value();
+
+    _rotationEnabled = rotationEnabled;
+
     return _channel.invokeMethod(SET_ROTATIONENABLED, rotationEnabled);
   }
 
   Future<void> setPulseDetectionExpiryTime(int pulseDetectionExpiryTime) {
+    if (_pulseDetectionExpiryTime == pulseDetectionExpiryTime) return Future.value();
+
+    _pulseDetectionExpiryTime = pulseDetectionExpiryTime;
+
     return _channel.invokeMethod(SET_PULSEDETECTIONEXPIRYTIME, pulseDetectionExpiryTime);
   }
 
   Future<void> setWaitForStartRecordingSignal(bool waitForStartRecordingSignal) {
+    if (_waitForStartRecordingSignal == waitForStartRecordingSignal) return Future.value();
+
+    _waitForStartRecordingSignal = waitForStartRecordingSignal;
+
     return _channel.invokeMethod(SET_WAITFORSTARTRECORDINGSIGNAL, waitForStartRecordingSignal);
   }
 }
