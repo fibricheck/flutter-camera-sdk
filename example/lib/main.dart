@@ -4,6 +4,10 @@ import 'dart:async';
 
 import 'package:permission_handler/permission_handler.dart';
 
+import '0_design_system/fc_colors.dart';
+import '5_ui/widgets/fc_title.dart';
+import '5_ui/widgets/fc_metrics.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -22,6 +26,10 @@ class _MyAppState extends State<MyApp> {
 
   bool _hasCameraPermission = false;
 
+  String _timeRemaining = "-";
+  String _heartBeat = "-";
+  String _status = "Place your finger on the camera";
+
   @override
   initState() {
     super.initState();
@@ -32,7 +40,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: FCColors.brokenWhite,
         appBar: AppBar(
+          backgroundColor: FCColors.green,
           title: const Text('Fibricheck example app'),
         ),
         body: Column(
@@ -42,31 +52,77 @@ class _MyAppState extends State<MyApp> {
                 future: _requestCameraPermission,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Text("Requiring camera permission");
+                    return const DemoTitleWidget(title: "Requiring camera permission");
                   }
 
                   if (!_hasCameraPermission) {
-                    return const Text("Camera permission not granted");
+                    return const DemoTitleWidget(title: "Camera permission not granted");
                   }
-
-                  return FibriCheckView(
-                    fibriCheckViewProperties: FibriCheckViewProperties(
-                      flashEnabled: true,
-                      lineThickness: 4,
-                    ),
-                    onCalibrationReady: () => debugPrint("Flutter onCalibrationReady"),
-                    onFingerDetected: () => debugPrint("Flutter onFingerDetected"),
-                    onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
-                    onFingerRemoved: () => debugPrint("Flutter onFingerRemoved"),
-                    onHeartBeat: (heartbeat) => debugPrint("Flutter onHeartBeat $heartbeat"),
-                    onMeasurementFinished: () => debugPrint("Flutter onMeasurementFinished"),
-                    onMeasurementProcessed: (measurement) => debugPrint("Flutter onMeasurementProcessed $measurement"),
-                    onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
-                    onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
-                    onPulseDetected: () => debugPrint("Flutter onPulseDetected"),
-                    onPulseDetectionTimeExpired: () => debugPrint("Flutter onPulseDetectionTimeExpired"),
-                    onSampleReady: (ppg, raw) => debugPrint("Flutter onSampleReady $ppg $raw"),
-                    onTimeRemaining: (seconds) => debugPrint("Flutter onTimeRemaining $seconds"),
+                  return Column(
+                    children: [
+                      DemoTitleWidget(title: _status),
+                      Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(color: FCColors.lightGray, width: 1),
+                            bottom: BorderSide(color: FCColors.lightGray, width: 1),
+                          ),
+                        ),
+                        height: 200,
+                        child: FibriCheckView(
+                          fibriCheckViewProperties: FibriCheckViewProperties(
+                            flashEnabled: true,
+                            lineThickness: 4,
+                          ),
+                          onCalibrationReady: () => {
+                            debugPrint("Flutter onCalibrationReady"),
+                            setState(() {
+                              _status = "Recording heartbeat...";
+                            }),
+                          },
+                          onFingerDetected: () => {
+                            debugPrint("Flutter onFingerDetected"),
+                            setState(() {
+                              _status = "Detecting pulse...";
+                            }),
+                          },
+                          onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
+                          onFingerRemoved: () => debugPrint("Flutter onFingerRemoved"),
+                          onHeartBeat: (heartbeat) => {
+                            debugPrint("Flutter onHeartBeat $heartbeat"),
+                            setState(() {
+                              _heartBeat = heartbeat.toString();
+                            }),
+                          },
+                          onMeasurementFinished: () => {
+                            debugPrint("Flutter onMeasurementFinished"),
+                            setState(() {
+                              _status = "Measurement finished!";
+                            }),
+                          },
+                          onMeasurementProcessed: (measurement) =>
+                              debugPrint("Flutter onMeasurementProcessed $measurement"),
+                          onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
+                          onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
+                          onPulseDetected: () => {
+                            debugPrint("Flutter onPulseDetected"),
+                            setState(() {
+                              _status = "Calibrating...";
+                            }),
+                          },
+                          onPulseDetectionTimeExpired: () => debugPrint("Flutter onPulseDetectionTimeExpired"),
+                          onSampleReady: (ppg, raw) => {},
+                          //debugPrint("Flutter onSampleReady $ppg $raw"), -> prints often. Only uncomment when data is relevant
+                          onTimeRemaining: (seconds) => {
+                            debugPrint("Flutter onTimeRemaining $seconds"),
+                            setState(() {
+                              _timeRemaining = seconds.toString();
+                            }),
+                          },
+                        ),
+                      ),
+                      DemoMetricsWidget(timeRemaining: _timeRemaining, heartBeat: _heartBeat),
+                    ],
                   );
                 },
               ),
@@ -79,8 +135,8 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _requestCameraPermissionImpl() async {
     var result = await Permission.camera.request();
-
-    _hasCameraPermission = result.isGranted;
-    setState(() {});
+    setState(() {
+      _hasCameraPermission = result.isGranted;
+    });
   }
 }
