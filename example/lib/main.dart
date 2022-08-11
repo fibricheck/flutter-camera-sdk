@@ -52,13 +52,11 @@ class _MyAppState extends State<MyApp> {
                 future: _requestCameraPermission,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const DemoTitleWidget(
-                        title: "Requiring camera permission");
+                    return const DemoTitleWidget(title: "Requiring camera permission");
                   }
 
                   if (!_hasCameraPermission) {
-                    return const DemoTitleWidget(
-                        title: "Camera permission not granted");
+                    return const DemoTitleWidget(title: "Camera permission not granted");
                   }
                   return Column(
                     children: [
@@ -66,10 +64,8 @@ class _MyAppState extends State<MyApp> {
                       Container(
                         decoration: const BoxDecoration(
                           border: Border(
-                            top:
-                                BorderSide(color: FCColors.lightGray, width: 1),
-                            bottom:
-                                BorderSide(color: FCColors.lightGray, width: 1),
+                            top: BorderSide(color: FCColors.lightGray, width: 1),
+                            bottom: BorderSide(color: FCColors.lightGray, width: 1),
                           ),
                         ),
                         height: 200,
@@ -80,52 +76,52 @@ class _MyAppState extends State<MyApp> {
                           ),
                           onCalibrationReady: () => {
                             debugPrint("Flutter onCalibrationReady"),
-                            _status = "Recording heartbeat...",
-                            setState(() {}),
+                            setState(() {
+                              _status = "Recording heartbeat...";
+                            }),
                           },
                           onFingerDetected: () => {
                             debugPrint("Flutter onFingerDetected"),
-                            _status = "Detecting pulse...",
-                            setState(() {}),
+                            setState(() {
+                              _status = "Detecting pulse...";
+                            }),
                           },
-                          onFingerDetectionTimeExpired: () => debugPrint(
-                              "Flutter onFingerDetectionTimeExpired"),
-                          onFingerRemoved: () =>
-                              debugPrint("Flutter onFingerRemoved"),
+                          onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
+                          onFingerRemoved: () => debugPrint("Flutter onFingerRemoved"),
                           onHeartBeat: (heartbeat) => {
                             debugPrint("Flutter onHeartBeat $heartbeat"),
-                            _heartBeat = heartbeat.toString(),
-                            setState(() {}),
+                            setState(() {
+                              _heartBeat = heartbeat.toString();
+                            }),
                           },
                           onMeasurementFinished: () => {
                             debugPrint("Flutter onMeasurementFinished"),
-                            _status = "Measurement finished!",
-                            setState(() {}),
+                            setState(() {
+                              _status = "Measurement finished!";
+                            }),
                           },
-                          onMeasurementProcessed: (measurement) => debugPrint(
-                              "Flutter onMeasurementProcessed $measurement"),
-                          onMeasurementStart: () =>
-                              debugPrint("Flutter onMeasurementStart"),
-                          onMovementDetected: () =>
-                              debugPrint("Flutter onMovementDetected"),
+                          onMeasurementProcessed: (measurement) =>
+                              debugPrint("Flutter onMeasurementProcessed $measurement"),
+                          onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
+                          onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
                           onPulseDetected: () => {
                             debugPrint("Flutter onPulseDetected"),
-                            _status = "Calibrating...",
-                            setState(() {}),
+                            setState(() {
+                              _status = "Calibrating...";
+                            }),
                           },
-                          onPulseDetectionTimeExpired: () =>
-                              debugPrint("Flutter onPulseDetectionTimeExpired"),
+                          onPulseDetectionTimeExpired: () => debugPrint("Flutter onPulseDetectionTimeExpired"),
                           onSampleReady: (ppg, raw) => {},
                           //debugPrint("Flutter onSampleReady $ppg $raw"), -> prints often. Only uncomment when data is relevant
                           onTimeRemaining: (seconds) => {
                             debugPrint("Flutter onTimeRemaining $seconds"),
-                            _timeRemaining = seconds.toString(),
-                            setState(() {}),
+                            setState(() {
+                              _timeRemaining = seconds.toString();
+                            }),
                           },
                         ),
                       ),
-                      DemoMetricsWidget(
-                          timeRemaining: _timeRemaining, heartBeat: _heartBeat)
+                      DemoMetricsWidget(timeRemaining: _timeRemaining, heartBeat: _heartBeat),
                     ],
                   );
                 },
@@ -139,8 +135,8 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> _requestCameraPermissionImpl() async {
     var result = await Permission.camera.request();
-
-    _hasCameraPermission = result.isGranted;
-    setState(() {});
+    setState(() {
+      _hasCameraPermission = result.isGranted;
+    });
   }
 }
