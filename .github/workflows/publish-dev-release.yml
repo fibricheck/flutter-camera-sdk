@@ -16,7 +16,8 @@ jobs:
       - run: flutter --version
       - run: flutter pub get
       - run: flutter analyze
-      - run: flutter test
+      - run: flutter build apk --release
+        working-directory: example
       - id: read-version
         uses: NiklasLehnfeld/flutter-version-number-action@main
       - name: Output flutter version
