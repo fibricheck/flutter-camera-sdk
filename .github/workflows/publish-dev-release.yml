@@ -20,7 +20,7 @@ jobs:
       - id: read-version
         uses: NiklasLehnfeld/flutter-version-number-action@main
       - name: Output flutter version
-        run: echo 'version_number:' ${{ steps.get_flutter_version.outputs.version_number }} ' build_number:' ${{ steps.read-version.outputs.version-number }}
+        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
       - run: git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com" && git config --global user.name "$GITHUB_ACTOR"
       - run: git tag -a v${{steps.read-version.outputs.version-number}} -m "Tagging v${{steps.read-version.outputs.version-number}}"
       - run: git push --tags && git push
