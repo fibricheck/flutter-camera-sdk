@@ -3,7 +3,7 @@ name: Flutter Camera SDK - Build/Analyze/Test/Tag
 on:
   push:
     branches:
-      - dev
+      - master
 
 jobs:
   build:
@@ -20,10 +20,8 @@ jobs:
         working-directory: example
       - id: read-version
         uses: NiklasLehnfeld/flutter-version-number-action@main
-      - name: Append version suffix
-        run: echo "BUILD_VERSION=${{steps.read-version.outputs.version-number}}-${GITHUB_REF_NAME}.${GITHUB_RUN_NUMBER}" >> $GITHUB_ENV
       - name: Output flutter version
-        run: echo 'version_number:' ${{ ENV.BUILD_VERSION }}
+        run: echo 'version_number:' ${{ steps.read-version.outputs.version-number }}
       - run: git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com" && git config --global user.name "$GITHUB_ACTOR"
-      - run: git tag -a v${{ ENV.BUILD_VERSION }} -m "Tagging v${{ ENV.BUILD_VERSION }}"
+      - run: git tag -a v${{steps.read-version.outputs.version-number}} -m "Tagging v${{steps.read-version.outputs.version-number}}"
       - run: git push --tags && git push
