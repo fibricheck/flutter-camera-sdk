@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
 
@@ -58,17 +57,17 @@ class FibriCheckView extends StatefulWidget {
   }
 
   @override
-  _FibriCheckViewState createState() => _FibriCheckViewState();
+  FibriCheckViewState createState() => FibriCheckViewState();
 }
 
-class _FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObserver {
+class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObserver {
   // This is used in the platform side to register the view.
   static const String viewType = 'fibricheckview';
 
   int _counter = 0;
   Key? _key;
 
-  _FibriCheckViewState() {
+  FibriCheckViewState() {
     _key = Key(_counter.toString());
   }
 
@@ -224,28 +223,27 @@ class _FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObse
 }
 
 class FibriCheckViewEventController {
-  static const String EVENT_TYPE = "eventType";
+  static const String type = "eventType";
 
-  static const String EVENT_SAMPLE_READY = "onSampleReady";
-  static const String EVENT_FINGER_DETECTED = "onFingerDetected";
-  static const String EVENT_FINGER_REMOVED = "onFingerRemoved";
-  static const String EVENT_CALIBRATION_READY = "onCalibrationReady";
-  static const String EVENT_HEARTBEAT = "onHeartBeat";
-  static const String EVENT_TIME_REMAINING = "onTimeRemaining";
-  static const String EVENT_MEASUREMENT_FINISHED = "onMeasurementFinished";
-  static const String EVENT_MEASUREMENT_START = "onMeasurementStart";
-  static const String EVENT_FINGER_DETECTION_TIME_EXPIRED = "onFingerDetectionTimeExpired";
-  static const String EVENT_PULSE_DETECTED = "onPulseDetected";
-  static const String EVENT_PULSE_DETECTION_TIME_EXPIRED = "onPulseDetectionTimeExpired";
-  static const String EVENT_MOVEMENT_DETECTED = "onMovementDetected";
-  static const String EVENT_MEASUREMENT_PROCESSED = "onMeasurementProcessed";
+  static const String eventSampleReady = "onSampleReady";
+  static const String eventFingerDetected = "onFingerDetected";
+  static const String eventFingerRemoved = "onFingerRemoved";
+  static const String eventCalibrationReady = "onCalibrationReady";
+  static const String eventHeartBeat = "onHeartBeat";
+  static const String eventTimeRemaining = "onTimeRemaining";
+  static const String eventMeasurementFinished = "onMeasurementFinished";
+  static const String eventMeasurementStart = "onMeasurementStart";
+  static const String eventFingerDetectionTimeExpired = "onFingerDetectionTimeExpired";
+  static const String eventPulseDetected = "onPulseDetected";
+  static const String eventPulseDetectionTimeExpired = "onPulseDetectionTimeExpired";
+  static const String eventMovementDetected = "onMovementDetected";
+  static const String eventMeasurementProcessed = "onMeasurementProcessed";
 
   final EventChannel _channel;
 
-  _FibriCheckViewState? _fibriCheckViewState;
+  FibriCheckViewState? _fibriCheckViewState;
 
-  FibriCheckViewEventController._(String id, _FibriCheckViewState this._fibriCheckViewState)
-      : _channel = EventChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_event');
+  FibriCheckViewEventController._(String id, FibriCheckViewState this._fibriCheckViewState) : _channel = EventChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_event');
 
   void subscribe() {
     _channel.receiveBroadcastStream().listen(_onEventReceived);
@@ -263,50 +261,50 @@ class FibriCheckViewEventController {
 
     var event = Map<String, dynamic>.from(e);
 
-    var eventType = event[EVENT_TYPE];
+    var eventType = event[type];
     switch (eventType) {
-      case EVENT_SAMPLE_READY:
+      case eventSampleReady:
         final ppg = event["ppg"] as double;
         final raw = event["raw"] as double;
 
         widget.onSampleReady(ppg, raw);
         break;
-      case EVENT_FINGER_DETECTED:
+      case eventFingerDetected:
         widget.onFingerDetected();
         break;
-      case EVENT_FINGER_REMOVED:
+      case eventFingerRemoved:
         widget.onFingerRemoved();
         break;
-      case EVENT_CALIBRATION_READY:
+      case eventCalibrationReady:
         widget.onCalibrationReady();
         break;
-      case EVENT_HEARTBEAT:
+      case eventHeartBeat:
         final heartRate = event["heartRate"] as int;
         widget.onHeartBeat(heartRate);
         break;
-      case EVENT_TIME_REMAINING:
+      case eventTimeRemaining:
         final timeRemaining = event["seconds"] as int;
         widget.onTimeRemaining(timeRemaining);
         break;
-      case EVENT_MEASUREMENT_FINISHED:
+      case eventMeasurementFinished:
         widget.onMeasurementFinished();
         break;
-      case EVENT_MEASUREMENT_START:
+      case eventMeasurementStart:
         widget.onMeasurementStart();
         break;
-      case EVENT_FINGER_DETECTION_TIME_EXPIRED:
+      case eventFingerDetectionTimeExpired:
         widget.onFingerDetectionTimeExpired();
         break;
-      case EVENT_PULSE_DETECTED:
+      case eventPulseDetected:
         widget.onPulseDetected();
         break;
-      case EVENT_PULSE_DETECTION_TIME_EXPIRED:
+      case eventPulseDetectionTimeExpired:
         widget.onPulseDetectionTimeExpired();
         break;
-      case EVENT_MOVEMENT_DETECTED:
+      case eventMovementDetected:
         widget.onMovementDetected();
         break;
-      case EVENT_MEASUREMENT_PROCESSED:
+      case eventMeasurementProcessed:
         final measurementJson = event["measurement"] as String;
         widget.onMeasurementProcessed(measurementJson);
         break;
@@ -316,25 +314,25 @@ class FibriCheckViewEventController {
 
 class FibriCheckViewMethodController {
   // Commands
-  static const String ALL_PROPERTIES_INITIALIZED = "allPropertiesInitialized";
-  static const String RESET_MODULE = "resetModule";
+  static const String commandAllPropertiesInitialized = "allPropertiesInitialized";
+  static const String commandResetModule = "resetModule";
 
   //Properties
-  static const String SET_DRAWGRAPH = "setDrawGraph";
-  static const String SET_DRAWBACKGROUND = "setDrawBackground";
-  static const String SET_LINECOLOR = "setLineColor";
-  static const String SET_LINETHICKNESS = "setLineThickness";
-  static const String SET_GRAPHBACKGROUNDCOLOR = "setGraphBackgroundColor";
-  static const String SET_SAMPLETIME = "setSampleTime";
-  static const String SET_ACCENABLED = "setAccEnabled";
-  static const String SET_FINGERDETECTIONEXPIRYTIME = "setFingerDetectionExpiryTime";
-  static const String SET_FLASHENABLED = "setFlashEnabled";
-  static const String SET_GRAVENABLED = "setGravEnabled";
-  static const String SET_GYROENABLED = "setGyroEnabled";
-  static const String SET_MOVEMENTDETECTIONENABLED = "setMovementDetectionEnabled";
-  static const String SET_ROTATIONENABLED = "setRotationEnabled";
-  static const String SET_WAITFORSTARTRECORDINGSIGNAL = "setWaitForStartRecordingSignal";
-  static const String SET_PULSEDETECTIONEXPIRYTIME = "setPulseDetectionExpiryTime";
+  static const String setPropertyDrawGraph = "setDrawGraph";
+  static const String setPropertyDrawBackground = "setDrawBackground";
+  static const String setPropertyLineColor = "setLineColor";
+  static const String setPropertyLineThickness = "setLineThickness";
+  static const String setPropertyGraphBackgroundColor = "setGraphBackgroundColor";
+  static const String setPropertySampleTime = "setSampleTime";
+  static const String setPropertyAccEnabled = "setAccEnabled";
+  static const String setPropertyFingerDetectionExpiryTime = "setFingerDetectionExpiryTime";
+  static const String setPropertyFlashEnabled = "setFlashEnabled";
+  static const String setPropertyGravEnabled = "setGravEnabled";
+  static const String setPropertyGyroEnabled = "setGyroEnabled";
+  static const String setPropertyMovementDetectionEnabled = "setMovementDetectionEnabled";
+  static const String setPropertyRotationEnabled = "setRotationEnabled";
+  static const String setPropertyWaitForStartRecordingSignal = "setWaitForStartRecordingSignal";
+  static const String setPropertyPulseDetectionExpiryTime = "setPulseDetectionExpiryTime";
 
   final MethodChannel _channel;
 
@@ -355,15 +353,14 @@ class FibriCheckViewMethodController {
   int? _pulseDetectionExpiryTime;
   bool? _waitForStartRecordingSignal;
 
-  FibriCheckViewMethodController._(String id)
-      : _channel = MethodChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_method');
+  FibriCheckViewMethodController._(String id) : _channel = MethodChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_method');
 
   Future<void> allPropertiesInitialized() async {
-    return _channel.invokeMethod(ALL_PROPERTIES_INITIALIZED);
+    return _channel.invokeMethod(commandAllPropertiesInitialized);
   }
 
   Future<void> resetModule() async {
-    return _channel.invokeMethod(RESET_MODULE);
+    return _channel.invokeMethod(commandResetModule);
   }
 
   Future<void> setDrawGraph(bool drawGraph) {
@@ -371,7 +368,7 @@ class FibriCheckViewMethodController {
 
     _drawGraph = drawGraph;
 
-    return _channel.invokeMethod(SET_DRAWGRAPH, drawGraph);
+    return _channel.invokeMethod(setPropertyDrawGraph, drawGraph);
   }
 
   Future<void> setDrawBackground(bool drawBackground) {
@@ -379,7 +376,7 @@ class FibriCheckViewMethodController {
 
     _drawBackground = drawBackground;
 
-    return _channel.invokeMethod(SET_DRAWBACKGROUND, drawBackground);
+    return _channel.invokeMethod(setPropertyDrawBackground, drawBackground);
   }
 
   Future<void> setLineColor(String lineColor) {
@@ -387,7 +384,7 @@ class FibriCheckViewMethodController {
 
     _lineColor = lineColor;
 
-    return _channel.invokeMethod(SET_LINECOLOR, lineColor);
+    return _channel.invokeMethod(setPropertyLineColor, lineColor);
   }
 
   Future<void> setLineThickness(int lineThickness) {
@@ -395,7 +392,7 @@ class FibriCheckViewMethodController {
 
     _lineThickness = lineThickness;
 
-    return _channel.invokeMethod(SET_LINETHICKNESS, lineThickness);
+    return _channel.invokeMethod(setPropertyLineThickness, lineThickness);
   }
 
   Future<void> setGraphBackgroundColor(String graphBackgroundColor) {
@@ -403,7 +400,7 @@ class FibriCheckViewMethodController {
 
     _graphBackgroundColor = graphBackgroundColor;
 
-    return _channel.invokeMethod(SET_GRAPHBACKGROUNDCOLOR, graphBackgroundColor);
+    return _channel.invokeMethod(setPropertyGraphBackgroundColor, graphBackgroundColor);
   }
 
   Future<void> setSampleTime(int sampleTime) {
@@ -411,7 +408,7 @@ class FibriCheckViewMethodController {
 
     _sampleTime = sampleTime;
 
-    return _channel.invokeMethod(SET_SAMPLETIME, sampleTime);
+    return _channel.invokeMethod(setPropertySampleTime, sampleTime);
   }
 
   Future<void> setAccEnabled(bool accEnabled) {
@@ -419,7 +416,7 @@ class FibriCheckViewMethodController {
 
     _accEnabled = accEnabled;
 
-    return _channel.invokeMethod(SET_ACCENABLED, accEnabled);
+    return _channel.invokeMethod(setPropertyAccEnabled, accEnabled);
   }
 
   Future<void> setFingerDetectionExpiryTime(int fingerDetectionExpiryTime) {
@@ -427,7 +424,7 @@ class FibriCheckViewMethodController {
 
     _fingerDetectionExpiryTime = fingerDetectionExpiryTime;
 
-    return _channel.invokeMethod(SET_FINGERDETECTIONEXPIRYTIME, fingerDetectionExpiryTime);
+    return _channel.invokeMethod(setPropertyFingerDetectionExpiryTime, fingerDetectionExpiryTime);
   }
 
   Future<void> setFlashEnabled(bool flashEnabled) {
@@ -435,7 +432,7 @@ class FibriCheckViewMethodController {
 
     _flashEnabled = flashEnabled;
 
-    return _channel.invokeMethod(SET_FLASHENABLED, flashEnabled);
+    return _channel.invokeMethod(setPropertyFlashEnabled, flashEnabled);
   }
 
   Future<void> setGravEnabled(bool gravEnabled) {
@@ -443,7 +440,7 @@ class FibriCheckViewMethodController {
 
     _gravEnabled = gravEnabled;
 
-    return _channel.invokeMethod(SET_GRAVENABLED, gravEnabled);
+    return _channel.invokeMethod(setPropertyGravEnabled, gravEnabled);
   }
 
   Future<void> setGyroEnabled(bool gyroEnabled) {
@@ -451,7 +448,7 @@ class FibriCheckViewMethodController {
 
     _gyroEnabled = gyroEnabled;
 
-    return _channel.invokeMethod(SET_GYROENABLED, gyroEnabled);
+    return _channel.invokeMethod(setPropertyGyroEnabled, gyroEnabled);
   }
 
   Future<void> setMovementDetectionEnabled(bool movementDetectionEnabled) {
@@ -459,7 +456,7 @@ class FibriCheckViewMethodController {
 
     _movementDetectionEnabled = movementDetectionEnabled;
 
-    return _channel.invokeMethod(SET_MOVEMENTDETECTIONENABLED, movementDetectionEnabled);
+    return _channel.invokeMethod(setPropertyMovementDetectionEnabled, movementDetectionEnabled);
   }
 
   Future<void> setRotationEnabled(bool rotationEnabled) {
@@ -467,7 +464,7 @@ class FibriCheckViewMethodController {
 
     _rotationEnabled = rotationEnabled;
 
-    return _channel.invokeMethod(SET_ROTATIONENABLED, rotationEnabled);
+    return _channel.invokeMethod(setPropertyRotationEnabled, rotationEnabled);
   }
 
   Future<void> setPulseDetectionExpiryTime(int pulseDetectionExpiryTime) {
@@ -475,7 +472,7 @@ class FibriCheckViewMethodController {
 
     _pulseDetectionExpiryTime = pulseDetectionExpiryTime;
 
-    return _channel.invokeMethod(SET_PULSEDETECTIONEXPIRYTIME, pulseDetectionExpiryTime);
+    return _channel.invokeMethod(setPropertyPulseDetectionExpiryTime, pulseDetectionExpiryTime);
   }
 
   Future<void> setWaitForStartRecordingSignal(bool waitForStartRecordingSignal) {
@@ -483,6 +480,6 @@ class FibriCheckViewMethodController {
 
     _waitForStartRecordingSignal = waitForStartRecordingSignal;
 
-    return _channel.invokeMethod(SET_WAITFORSTARTRECORDINGSIGNAL, waitForStartRecordingSignal);
+    return _channel.invokeMethod(setPropertyWaitForStartRecordingSignal, waitForStartRecordingSignal);
   }
 }
