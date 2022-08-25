@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:wakelock/wakelock.dart';
 
-import '0_design_system/fc_colors.dart';
-import '5_ui/widgets/fc_title.dart';
-import '5_ui/widgets/fc_metrics.dart';
+import 'package:camera_sdk_example/0_design_system/fc_colors.dart';
+import 'package:camera_sdk_example/5_ui/widgets/fc_title.dart';
+import 'package:camera_sdk_example/5_ui/widgets/fc_metrics.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -81,13 +82,17 @@ class _MyAppState extends State<MyApp> {
                             }),
                           },
                           onFingerDetected: () => {
+                            Wakelock.enable(),
                             debugPrint("Flutter onFingerDetected"),
                             setState(() {
                               _status = "Detecting pulse...";
                             }),
                           },
                           onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
-                          onFingerRemoved: () => debugPrint("Flutter onFingerRemoved"),
+                          onFingerRemoved: () => {
+                            Wakelock.disable(),
+                            debugPrint("Flutter onFingerRemoved"),
+                          },
                           onHeartBeat: (heartbeat) => {
                             debugPrint("Flutter onHeartBeat $heartbeat"),
                             setState(() {
@@ -100,8 +105,7 @@ class _MyAppState extends State<MyApp> {
                               _status = "Measurement finished!";
                             }),
                           },
-                          onMeasurementProcessed: (measurement) =>
-                              debugPrint("Flutter onMeasurementProcessed $measurement"),
+                          onMeasurementProcessed: (measurement) => debugPrint("Flutter onMeasurementProcessed $measurement"),
                           onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
                           onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
                           onPulseDetected: () => {
