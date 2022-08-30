@@ -1,6 +1,5 @@
 #import "CameraSdkPlugin.h"
 #import "FLFibriCheckViewController.h"
-#import "FLFibriCheckViewController.m"
 
 @implementation CameraSdkPlugin
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
