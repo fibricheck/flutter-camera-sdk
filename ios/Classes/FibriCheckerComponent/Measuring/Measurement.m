@@ -141,7 +141,7 @@
 
     meaModel[@"time"] = _time;
 
-    meaModel[@"heartRate"] = @(_heartRate);
+    meaModel[@"heartrate"] = @(_heartRate);
 
     meaModel[@"attempts"] = @(_attempts);
 
