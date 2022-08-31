@@ -286,12 +286,8 @@
     };
     
     self.fibrichecker.onMeasurementProcessed = ^(Measurement* measurement){
-        NSDictionary *data = @{@"measurement":[measurement mapToJson]};
         dispatch_async(dispatch_get_main_queue(), ^{
-            NSError *error;
-            NSData *jsonData = [NSJSONSerialization dataWithJSONObject:data
-                                                               options:NSJSONWritingPrettyPrinted // Pass 0 if you don't care about the readability of the generated string
-                                                                 error:&error];
+            NSData *jsonData = [[measurement mapToJson] dataUsingEncoding:NSUTF8StringEncoding];
             NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
             
             [_eventHandler send:@{@"eventType" : @"onMeasurementProcessed", @"measurement" : jsonString}];
