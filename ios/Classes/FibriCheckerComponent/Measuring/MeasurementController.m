@@ -426,7 +426,6 @@
     }
 }
 
-
 #pragma mark - Delegate Management
 
 - (void)notifyDelegateHeartRateUpdated:(NSUInteger)heartRate {
