@@ -358,6 +358,12 @@
             [_eventHandler send:@{@"eventType" : @"onTimeRemaining", @"seconds" : [NSNumber numberWithInteger:seconds]}];
         });
     };
+
+    self.fibrichecker.onMeasurementError = ^(NSString* message) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+            [_eventHandler send:@{@"eventType" : @"onMeasurementError", @"message" : message}];
+    });
+  };
 }
 
 -(UIColor *)colorFromHexString:(NSString *)hexString {

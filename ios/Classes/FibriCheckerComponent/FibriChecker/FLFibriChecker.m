@@ -121,6 +121,12 @@
     }
 }
 
+- (void)measurementController:(MeasurementController *)measurementController didReceiveMeasurementError:(NSString*)message {
+    if (self.onMeasurementError != nil) {
+        self.onMeasurementError(message);
+    }
+}
+
 - (void)measurementControllerDidStartRecording {
     if (self.onMeasurementStart != nil) {
         self.onMeasurementStart();

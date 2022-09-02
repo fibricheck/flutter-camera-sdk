@@ -340,9 +340,12 @@
 
 - (void) detectMovementWithAccX: (float) accx accY:(float)accy accZ:(float)accz {
     if (self.movementDetectionEnabled) {
-        double acc_vec =  sqrt( pow(accx,2) + pow(accy,2) + pow(accz,2) );
-        
-        if (acc_vec != 0 && (acc_vec > self.movementVectorUpperLimit || acc_vec < self.movementVectorLowerLimit)) {
+        double accVector =  sqrt( pow(accx,2) + pow(accy,2) + pow(accz,2) );
+        if (accVector == 0) { // test onMeasurementError by forcing this if to true
+            [self notifyDelegateDidReceiveBrokenAccSensorData];
+            [self stopCamera];
+        }        
+        if (accVector > self.movementVectorUpperLimit || accVector < self.movementVectorLowerLimit) {
             self.state = MeasurementControllerStateDetectingFinger;
             [self notifyDelegateDidReceiveMovement];
         }
@@ -441,6 +444,15 @@
         }
     });
 }
+
+- (void)notifyDelegateDidReceiveBrokenAccSensorData {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.delegate && [self.delegate respondsToSelector:@selector(measurementController:didReceiveMeasurementError:)]) {
+            [self.delegate measurementController:self didReceiveMeasurementError:@"BROKEN_ACC_SENSOR"];
+        }
+    });
+}
+
 
 - (void)notifyDelegateDidChangeState:(MeasurementControllerState)state {
     dispatch_async(dispatch_get_main_queue(), ^{
