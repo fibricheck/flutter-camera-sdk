@@ -48,6 +48,7 @@
 @property (copy) void (^onMeasurementProcessed)(Measurement*);
 @property (copy) void (^onSampleReady)(double, double);
 @property (copy) void (^onTimeRemaining)(NSUInteger);
+@property (copy) void (^onMeasurementError)(NSString*);
 
 #pragma mark - Methods
 

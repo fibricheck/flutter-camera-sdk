@@ -123,6 +123,7 @@ class _MyAppState extends State<MyApp> {
                               _timeRemaining = seconds.toString();
                             }),
                           },
+                          onMeasurementError: (message) => debugPrint("Flutter onMeasurementError: $message"),
                         ),
                       ),
                       DemoMetricsWidget(timeRemaining: _timeRemaining, heartBeat: _heartBeat),

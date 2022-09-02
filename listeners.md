@@ -178,3 +178,22 @@ FibriCheckView(
     ...
 ),
 ```
+
+### onMeasurementError
+
+This event will fire when a measurement error occurs. The measurement will halt upon such an error, so it's best to handle them accordingly.
+
+Possible values of the error are:
+
+```dart
+class MeasurementErrors { 
+    static const String brokenAccSensorError = "BROKEN_ACC_SENSOR"; 
+}
+```
+```dart
+FibriCheckView(
+    ...
+    onMeasurementError: (message) => { ...your code here...},
+    ...
+),
+```
