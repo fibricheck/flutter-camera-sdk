@@ -6,6 +6,10 @@ import 'package:uuid/uuid.dart';
 import 'fibri_check_view_properties.dart';
 export 'fibri_check_view_properties.dart';
 
+class MeasurementErrors {
+  static const String brokenAccSensorError = "BROKEN_ACC_SENSOR";
+}
+
 class FibriCheckView extends StatefulWidget {
   late final FibriCheckViewProperties _fibriCheckViewProperties;
   late final Function onFingerDetected;
