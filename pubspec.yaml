@@ -2,7 +2,7 @@ publish_to: none
 
 name: camera_sdk
 description: The camera SDK is a PPG recording module that you can use in combination with the FibriCheck Flutter SDK.
-version: 0.0.2
+version: 1.0.0
 homepage: https://docs.fibricheck.com/v/camera-sdk/
 
 environment:
