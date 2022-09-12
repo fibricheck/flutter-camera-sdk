@@ -1,15 +1,20 @@
 package com.fibricheck.camera_sdk;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Insets;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
 import android.widget.LinearLayout;
 
 import com.jjoe64.graphview.GraphView;
@@ -78,7 +83,7 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
     FlutterFibriCheckView(@NonNull Context context, BinaryMessenger messenger, int id, @Nullable Map<String, Object> creationParams) {
         this.context = context;
 
-        String channelId = (String) creationParams.get("channelId");
+        String channelId = creationParams == null ? "" : (String) creationParams.get("channelId");
         String channelName = "com.fibricheck.camera_sdk/flutterFibriCheckView_" + channelId;
 
         methodChannel = new MethodChannel(messenger, channelName + "_method");
@@ -340,7 +345,7 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
             data[i] = new DataPoint(0, 0);
         }
 
-        this.series = new LineGraphSeries(data);
+        this.series = new LineGraphSeries<DataPoint>(data);
 
         series = new LineGraphSeries<>(dataPoints.toArray(new DataPoint[dataPoints.size()]));
         series.setColor(Color.BLUE);
@@ -348,9 +353,7 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         series.setBackgroundColor(Color.TRANSPARENT);
         series.setDrawBackground(true);
 
-        DisplayMetrics displayMetrics = getDisplayMetrics(context);
-
-        int width = displayMetrics.widthPixels;
+        int width = getScreenWidth(context);
         boolean drawAsPath = width >= 1080;
 
         series.setDrawAsPath(drawAsPath);
@@ -359,17 +362,29 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         graphView.addSeries(series);
     }
 
-    private DisplayMetrics getDisplayMetrics(Context context) {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-
+    private int getScreenWidth(Context context) {
         Activity activity = getActivity(context);
-        if (activity != null) {
-            activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        } else {
-            displayMetrics = Resources.getSystem().getDisplayMetrics();
+
+        if (activity == null){
+            return Resources.getSystem().getDisplayMetrics().widthPixels;
         }
 
-        return displayMetrics;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+            Insets insets = windowMetrics.getWindowInsets()
+                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+            return windowMetrics.getBounds().width() - insets.left - insets.right;
+        } else {
+            return getScreenWidthBelowAndroidR(activity);
+        }
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    @SuppressWarnings("deprecation")
+    private int getScreenWidthBelowAndroidR(@NonNull Activity activity) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 
     private void addGraphData(double value) {

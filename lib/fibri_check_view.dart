@@ -6,6 +6,10 @@ import 'package:uuid/uuid.dart';
 import 'fibri_check_view_properties.dart';
 export 'fibri_check_view_properties.dart';
 
+class MeasurementErrors {
+  static const String brokenAccSensorError = "BROKEN_ACC_SENSOR";
+}
+
 class FibriCheckView extends StatefulWidget {
   late final FibriCheckViewProperties _fibriCheckViewProperties;
   late final Function onFingerDetected;
@@ -21,24 +25,26 @@ class FibriCheckView extends StatefulWidget {
   late final Function onPulseDetectionTimeExpired;
   late final Function onMovementDetected;
   late final Function(String measurementJson) onMeasurementProcessed;
+  late final Function(String message) onMeasurementError;
 
-  FibriCheckView(
-      {Key? key,
-      FibriCheckViewProperties? fibriCheckViewProperties,
-      Function? onFingerDetected,
-      Function? onFingerRemoved,
-      Function? onFingerDetectionTimeExpired,
-      Function? onCalibrationReady,
-      Function(int heartRate)? onHeartBeat,
-      Function? onMeasurementFinished,
-      Function? onMeasurementStart,
-      Function(int seconds)? onTimeRemaining,
-      Function(double ppg, double raw)? onSampleReady,
-      Function? onPulseDetected,
-      Function? onPulseDetectionTimeExpired,
-      Function? onMovementDetected,
-      Function(String measurement)? onMeasurementProcessed})
-      : super(key: key) {
+  FibriCheckView({
+    Key? key,
+    FibriCheckViewProperties? fibriCheckViewProperties,
+    Function? onFingerDetected,
+    Function? onFingerRemoved,
+    Function? onFingerDetectionTimeExpired,
+    Function? onCalibrationReady,
+    Function(int heartRate)? onHeartBeat,
+    Function? onMeasurementFinished,
+    Function? onMeasurementStart,
+    Function(int seconds)? onTimeRemaining,
+    Function(double ppg, double raw)? onSampleReady,
+    Function? onPulseDetected,
+    Function? onPulseDetectionTimeExpired,
+    Function? onMovementDetected,
+    Function(String measurement)? onMeasurementProcessed,
+    Function(String message)? onMeasurementError,
+  }) : super(key: key) {
     _fibriCheckViewProperties = fibriCheckViewProperties ?? FibriCheckViewProperties();
 
     this.onFingerDetected = onFingerDetected ?? () => {};
@@ -54,6 +60,7 @@ class FibriCheckView extends StatefulWidget {
     this.onPulseDetectionTimeExpired = onPulseDetectionTimeExpired ?? () => {};
     this.onMovementDetected = onMovementDetected ?? () => {};
     this.onMeasurementProcessed = onMeasurementProcessed ?? (measurement) => {};
+    this.onMeasurementError = onMeasurementError ?? (message) => {};
   }
 
   @override
@@ -238,6 +245,7 @@ class FibriCheckViewEventController {
   static const String eventPulseDetectionTimeExpired = "onPulseDetectionTimeExpired";
   static const String eventMovementDetected = "onMovementDetected";
   static const String eventMeasurementProcessed = "onMeasurementProcessed";
+  static const String eventMeasurementError = "onMeasurementError";
 
   final EventChannel _channel;
 
@@ -307,6 +315,10 @@ class FibriCheckViewEventController {
       case eventMeasurementProcessed:
         final measurementJson = event["measurement"] as String;
         widget.onMeasurementProcessed(measurementJson);
+        break;
+      case eventMeasurementError:
+        final message = event["message"] as String;
+        widget.onMeasurementError(message);
         break;
     }
   }
