@@ -7,6 +7,9 @@ import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.StandardMessageCodec;
 import io.flutter.plugin.platform.PlatformView;
 import io.flutter.plugin.platform.PlatformViewFactory;
+
+import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FlutterFibriCheckViewFactory extends PlatformViewFactory {
@@ -18,9 +21,14 @@ public class FlutterFibriCheckViewFactory extends PlatformViewFactory {
     }
 
     @NonNull
+    @SuppressWarnings("unchecked")
     @Override
     public PlatformView create(@Nullable Context context, int viewId, @Nullable Object args) {
-        final Map<String, Object> creationParams = (Map<String, Object>) args;
+        if(args != null && !(args instanceof Map<?,?>)) {
+            throw new InvalidParameterException("args should be of type Map<String,Object>");
+        }
+
+        final Map<String, Object> creationParams = args == null ? null : (Map<String,Object>)args;
 
         return new FlutterFibriCheckView(context, messenger, viewId, creationParams);
     }
