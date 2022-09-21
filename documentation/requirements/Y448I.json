@@ -1,0 +1,13 @@
+{
+  "id": "Y448I",
+  "name": "Default properties",
+  "description": "When not all Properties are set, default properties will be applied:\n\n```\nFibriCheckViewProperties(\n      {this.graphBackgroundColor = '',\n      this.drawGraph = true,\n      this.lineColor = '#63b3a6',\n      this.lineThickness = 8,\n      this.drawBackground = true,\n      this.sampleTime = 60,\n      this.flashEnabled = true,\n      this.gravEnabled = false,\n      this.gyroEnabled = false,\n      this.accEnabled = false,\n      this.rotationEnabled = false,\n      this.movementDetectionEnabled = true,\n      this.fingerDetectionExpiryTime = -1,\n      this.pulseDetectionExpiryTime = 10,\n      this.waitForStartRecordingSignal = false});\n```",
+  "type": "specification",
+  "origin": "user_need",
+  "keyValues": [],
+  "attachments": [],
+  "testIds": [
+    "8GV76"
+  ],
+  "updatedTime": 1663759494181
+}
