@@ -31,7 +31,7 @@ class FibriCheckView extends StatefulWidget {
     Key? key,
     FibriCheckViewProperties? fibriCheckViewProperties,
     Function? onFingerDetected,
-    Function? onFingerRemoved,
+    Function(double y, double v, double stdDevY)? onFingerRemoved,
     Function? onFingerDetectionTimeExpired,
     Function? onCalibrationReady,
     Function(int heartRate)? onHeartBeat,
@@ -48,7 +48,7 @@ class FibriCheckView extends StatefulWidget {
     _fibriCheckViewProperties = fibriCheckViewProperties ?? FibriCheckViewProperties();
 
     this.onFingerDetected = onFingerDetected ?? () => {};
-    this.onFingerRemoved = onFingerRemoved ?? () => {};
+    this.onFingerRemoved = onFingerRemoved ?? (y, v, stdDevY) => {};
     this.onFingerDetectionTimeExpired = onFingerDetectionTimeExpired ?? () => {};
     this.onCalibrationReady = onCalibrationReady ?? () => {};
     this.onHeartBeat = onHeartBeat ?? (heartRate) => {};
@@ -281,7 +281,11 @@ class FibriCheckViewEventController {
         widget.onFingerDetected();
         break;
       case eventFingerRemoved:
-        widget.onFingerRemoved();
+        final y = event["y"] as double;
+        final v = event["v"] as double;
+        final stdDevY = event["stdDevY"] as double;
+
+        widget.onFingerRemoved(y, v, stdDevY);
         break;
       case eventCalibrationReady:
         widget.onCalibrationReady();

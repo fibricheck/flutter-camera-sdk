@@ -309,9 +309,14 @@
         });
     };
     
-    self.fibrichecker.onFingerRemoved = ^{
+    self.fibrichecker.onFingerRemoved = ^(double y, double v, double stdDevY){
         dispatch_async(dispatch_get_main_queue(), ^{
-            [_eventHandler send:@{@"eventType" : @"onFingerRemoved"}];
+            [_eventHandler send:@{
+                @"eventType" : @"onFingerRemoved",
+                @"y" : [NSNumber numberWithFloat:y],
+                @"v" : [NSNumber numberWithFloat:v],
+                @"stdDevY" : [NSNumber numberWithFloat:stdDevY]
+            }];
         });
     };
     
