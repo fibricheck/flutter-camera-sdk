@@ -5,18 +5,18 @@
 //  Copyright © 2018 Qompium NV. All rights reserved.
 //
 
-#import "FibriChecker.h"
+#import "FLFibriChecker.h"
 #import "BeatListener.h"
 #import "MeasurementController.h"
 #import "Measurement.h"
 #import "DataPoint.h"
 
-@interface FibriChecker()<MeasurementControllerDelegate>
+@interface FLFibriChecker()<MeasurementControllerDelegate>
 
 @property (nonatomic, strong) MeasurementController * measurementController;
 @end
 
-@implementation FibriChecker
+@implementation FLFibriChecker
 
 #pragma mark - Public
 
