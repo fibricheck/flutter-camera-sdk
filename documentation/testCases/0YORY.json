@@ -1,0 +1,21 @@
+{
+  "id": "0YORY",
+  "name": "Check if the visualisations are natively rendered",
+  "type": "manual",
+  "tier": "System - Smoke",
+  "planStatus": "Planned",
+  "motivation": "",
+  "testSteps": [
+    "Start a measurement on an older device",
+    "Check if the graph is still rendering smoothly"
+  ],
+  "expectedResult": "The graph is still rendering smoothly, this indicates that it is rendered natively\n",
+  "requiredTestEnvironmentIds": [],
+  "keyValues": [],
+  "parentNames": [
+    "Execute a measurement",
+    "Visualisations",
+    "Visualisations are natively rendered in the component"
+  ],
+  "updatedTime": 1663759946216
+}
