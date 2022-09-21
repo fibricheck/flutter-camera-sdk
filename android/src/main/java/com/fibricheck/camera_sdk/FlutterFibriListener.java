@@ -72,8 +72,13 @@ public class FlutterFibriListener extends FibriListener implements EventChannel.
     }
 
     @Override
-    public void onFingerRemoved() {
-        publishEvent(EVENT_FINGER_REMOVED, new HashMap<>());
+    public void onFingerRemoved(double y, double v, double stdDevY) {
+        HashMap<String, Object> params = new HashMap<>();
+        params.put("y", y);
+        params.put("v", v);
+        params.put("stdDevY", stdDevY);
+
+        publishEvent(EVENT_FINGER_REMOVED, params);
     }
 
     @Override

@@ -1,0 +1,21 @@
+{
+  "id": "0YORY",
+  "name": "Check if the visualisations are natively rendered",
+  "type": "manual",
+  "tier": "System - Smoke",
+  "planStatus": "Planned",
+  "motivation": "",
+  "testSteps": [
+    "Start a measurement",
+    "Check if the EventChannel between the Dart part and the native part is not polluted with data points to plot."
+  ],
+  "expectedResult": "The EventChannel is not polluted, so one can assume the data points are plotted on the native side.",
+  "requiredTestEnvironmentIds": [],
+  "keyValues": [],
+  "parentNames": [
+    "Execute a measurement",
+    "Visualisations",
+    "Visualisations are natively rendered in the component"
+  ],
+  "updatedTime": 1663762100717
+}
