@@ -1,7 +1,7 @@
 {
   "id": "J7FBT",
   "name": "Visualisations are natively rendered in the component",
-  "description": "All the visualisations are natively rendered, so it won't affect App performance",
+  "description": "All the visualisations are natively rendered, so it won't affect the EventChannel. This will benefit the performance greatly.",
   "type": "specification",
   "origin": "user_need",
   "keyValues": [],
@@ -9,5 +9,5 @@
   "testIds": [
     "0YORY"
   ],
-  "updatedTime": 1663759253990
+  "updatedTime": 1663762151901
 }
