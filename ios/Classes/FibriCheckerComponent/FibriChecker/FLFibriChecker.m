@@ -1,3 +1,10 @@
+//
+//  FibriChecker.m
+//  FibriCheckerComponent
+//
+//  Copyright © 2018 Qompium NV. All rights reserved.
+//
+
 #import "FLFibriChecker.h"
 #import "BeatListener.h"
 #import "MeasurementController.h"
@@ -7,7 +14,6 @@
 @interface FLFibriChecker()<MeasurementControllerDelegate>
 
 @property (nonatomic, strong) MeasurementController * measurementController;
-
 @end
 
 @implementation FLFibriChecker
@@ -15,11 +21,11 @@
 #pragma mark - Public
 
 - (instancetype)init {
+    NSLog(@"FibriChecker init");
     self = [super init];
     if (self) {
         self.measurementController = [MeasurementController new];
         self.measurementController.delegate = self;
-
         // Set Defaults
         self.flashEnabled = true;
         self.gyroEnabled = false;
@@ -42,6 +48,7 @@
     }
     return self;
 }
+
 - (void)startMeasurement {
     [self updateConfiguration];
     [self.measurementController startMeasurement];
@@ -63,7 +70,6 @@
 }
 
 #pragma mark - Internal
-
 - (void)updateConfiguration {
     self.measurementController.flashEnabled = self.flashEnabled;
     self.measurementController.movementDetectionEnabled = self.movementDetectionEnabled;
@@ -87,13 +93,11 @@
 }
 
 #pragma mark - MeasureControllerDelegate
-
 - (void)measurementController:(MeasurementController *)measurementController didChangeState:(MeasurementControllerState)state {
     if (state == MeasurementControllerStateFinished) {
         if (self.onMeasurementFinished != nil) {
             self.onMeasurementFinished();
         }
-
         Measurement *measurement = self.measurementController.measurement;
         [measurement processData];
         if (self.onMeasurementProcessed != nil) {
@@ -115,15 +119,15 @@
     }
 }
 
-- (void)measurementController:(MeasurementController *)measurementController heartRateUpdated:(NSUInteger)heartRate {
-    if (self.onHeartBeat != nil) {
-        self.onHeartBeat(heartRate);
-    }
-}
-
 - (void)measurementController:(MeasurementController *)measurementController didReceiveMeasurementError:(NSString*)message {
     if (self.onMeasurementError != nil) {
         self.onMeasurementError(message);
+    }
+}
+
+- (void)measurementController:(MeasurementController *)measurementController heartRateUpdated:(NSUInteger)heartRate {
+    if (self.onHeartBeat != nil) {
+        self.onHeartBeat(heartRate);
     }
 }
 
@@ -139,9 +143,9 @@
     }
 }
 
-- (void)measurementControllerDidReceiveFingerRemoved {
+- (void)measurementController:(MeasurementController *)measurementController didReceiveFingerRemoved:(DataPoint *)datapoint {
     if (self.onFingerRemoved != nil) {
-        self.onFingerRemoved();
+        self.onFingerRemoved(datapoint.y, datapoint.v, datapoint.stdDevY);
     }
 }
 

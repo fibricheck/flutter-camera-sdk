@@ -89,9 +89,9 @@ class _MyAppState extends State<MyApp> {
                             }),
                           },
                           onFingerDetectionTimeExpired: () => debugPrint("Flutter onFingerDetectionTimeExpired"),
-                          onFingerRemoved: () => {
+                          onFingerRemoved: (y, v, stdDevY) => {
                             Wakelock.disable(),
-                            debugPrint("Flutter onFingerRemoved"),
+                            debugPrint("Flutter onFingerRemoved $y, $v, $stdDevY"),
                           },
                           onHeartBeat: (heartbeat) => {
                             debugPrint("Flutter onHeartBeat $heartbeat"),

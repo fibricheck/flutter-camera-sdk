@@ -1,3 +1,10 @@
+//
+//  MeasurementController.m
+//  FibriCheckerComponent
+//
+//  Copyright © 2018 Qompium NV. All rights reserved.
+//
+
 #import "MeasurementController.h"
 #import <CoreMotion/CoreMotion.h>
 #import <UIKit/UIKit.h>
@@ -316,7 +323,7 @@
         self.initialFingerDetectionState = NO;
         self.state = MeasurementControllerStateDetectingFinger;
         self.event = MeasurementControllerEventFingerRemoved;
-        [self notifyDelegateDidReceiveFingerRemoved];
+        [self notifyDelegateDidReceiveFingerRemoved: dp];
     }
 
     if (!self.fingerDetected && self.fingerGoodCount > FINGER_GOOD_COUNT) {
@@ -469,10 +476,10 @@
     });
 }
 
-- (void)notifyDelegateDidReceiveFingerRemoved {
+- (void)notifyDelegateDidReceiveFingerRemoved:(DataPoint*)dp {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.delegate && [self.delegate respondsToSelector:@selector(measurementControllerDidReceiveFingerRemoved)]) {
-            [self.delegate measurementControllerDidReceiveFingerRemoved];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(measurementController:didReceiveFingerRemoved:)]) {
+            [self.delegate measurementController:self didReceiveFingerRemoved:dp];
         }
     });
 }
