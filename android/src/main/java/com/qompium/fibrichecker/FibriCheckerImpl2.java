@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
@@ -480,9 +481,21 @@ public class FibriCheckerImpl2 extends FibriChecker {
     }
   }
 
+  public Activity getActivity(Context context) {
+    if (context == null) {
+        return null;
+    } else if (context instanceof Activity) {
+        return (Activity) context;
+    } else if (context instanceof ContextWrapper) {
+        return getActivity(((ContextWrapper) context).getBaseContext());
+    }
+
+    return null;
+  }
+
   @Override public void onFrameReceived (final Quadrant quadrantData, final double[] yuvData, final long timestamp) {
 
-    ((Activity)context).runOnUiThread(new Runnable() {
+    getActivity(context).runOnUiThread(new Runnable() {
 
       @Override public void run () {
 
