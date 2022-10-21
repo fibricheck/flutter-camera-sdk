@@ -1,5 +1,6 @@
 package com.qompium.fibrichecker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.os.AsyncTask;
@@ -111,6 +112,8 @@ public abstract class FibriChecker implements CameraListener {
 
   protected String cameraResolution;
 
+  protected Activity activity;
+
   int hardwareLevel;
 
   int currentIso = 0;
@@ -127,6 +130,7 @@ public abstract class FibriChecker implements CameraListener {
 
     this.viewGroup = viewGroup;
     this.context = context;
+    this.activity = Utils.getActivity(context);
     exportBuilderData(builder);
     init();
   }

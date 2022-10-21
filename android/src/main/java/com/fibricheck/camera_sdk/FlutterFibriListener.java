@@ -3,7 +3,7 @@ package com.fibricheck.camera_sdk;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.qompium.fibrichecker.listeners.FibriListener;
+import com.qompium.fibrichecker.listeners.IFibriListener;
 import com.qompium.fibrichecker.measurement.MeasurementData;
 
 import org.json.JSONException;
@@ -14,7 +14,7 @@ import java.util.HashMap;
 import androidx.annotation.NonNull;
 import io.flutter.plugin.common.EventChannel;
 
-public class FlutterFibriListener extends FibriListener implements EventChannel.StreamHandler {
+public class FlutterFibriListener implements EventChannel.StreamHandler, IFibriListener {
     private static final String TAG = "FlutterFibriCheckView";
 
     //Events
@@ -39,10 +39,6 @@ public class FlutterFibriListener extends FibriListener implements EventChannel.
 
     FlutterFibriListener(SampleReadyCallBack sampleReadyCallBack) {
         this.sampleReadyCallBack = sampleReadyCallBack;
-    }
-
-    void dispose() {
-        sampleReadyCallBack = null;
     }
 
     @Override

@@ -481,21 +481,9 @@ public class FibriCheckerImpl2 extends FibriChecker {
     }
   }
 
-  public Activity getActivity(Context context) {
-    if (context == null) {
-        return null;
-    } else if (context instanceof Activity) {
-        return (Activity) context;
-    } else if (context instanceof ContextWrapper) {
-        return getActivity(((ContextWrapper) context).getBaseContext());
-    }
-
-    return null;
-  }
-
   @Override public void onFrameReceived (final Quadrant quadrantData, final double[] yuvData, final long timestamp) {
 
-    getActivity(context).runOnUiThread(new Runnable() {
+    activity.runOnUiThread(new Runnable() {
 
       @Override public void run () {
 
