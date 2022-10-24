@@ -483,7 +483,7 @@ public class FibriCheckerImpl2 extends FibriChecker {
 
   @Override public void onFrameReceived (final Quadrant quadrantData, final double[] yuvData, final long timestamp) {
 
-    activity.runOnUiThread(new Runnable() {
+    Utils.getActivity(context).runOnUiThread(new Runnable() {
 
       @Override public void run () {
 
