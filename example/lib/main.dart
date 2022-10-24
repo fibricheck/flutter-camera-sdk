@@ -1,4 +1,4 @@
-import 'package:camera_sdk/fibri_check_view.dart';
+import 'package:camera_sdk/fibricheck_view.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
