@@ -105,6 +105,8 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
     @Override
     public void dispose() {
         fibriChecker.stop();
+        methodChannel.setMethodCallHandler(null);
+        eventChannel.setStreamHandler(null);
     }
 
     //region Props Setters
