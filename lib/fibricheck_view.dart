@@ -72,7 +72,7 @@ class FibriCheckView extends StatefulWidget {
 // WidgetsBindingObserver is an interface to say that that the current class observe the appLifecycle.
 class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObserver {
   // This is used in the platform side to register the view.
-  static const String viewType = 'fibricheckview';
+  static const String viewType = "fibricheckview";
 
   int _counter = 0;
   Key? _key;
@@ -111,7 +111,7 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
 
   bool get waitForStartRecordingSignal => widget._fibriCheckViewProperties.waitForStartRecordingSignal;
 
-  String _channelId = '';
+  String _channelId = "";
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
 
   FibriCheckViewEventController? _fibriCheckViewEventController;
@@ -151,7 +151,7 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
           creationParamsCodec: const StandardMessageCodec(),
         );
       default:
-        throw UnsupportedError('Unsupported platform view');
+        throw UnsupportedError("Unsupported platform view");
     }
 
     // ignore user inputs.

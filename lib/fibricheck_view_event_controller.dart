@@ -25,7 +25,7 @@ class FibriCheckViewEventController {
   FibriCheckViewState? _fibriCheckViewState;
 
   FibriCheckViewEventController(String id, FibriCheckViewState this._fibriCheckViewState) {
-    _channel = EventChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_event');
+    _channel = EventChannel("com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_event");
   }
 
   void subscribe() {

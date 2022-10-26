@@ -16,9 +16,9 @@ class FibriCheckViewProperties {
   final bool waitForStartRecordingSignal;
 
   FibriCheckViewProperties(
-      {this.graphBackgroundColor = '',
+      {this.graphBackgroundColor = "",
       this.drawGraph = true,
-      this.lineColor = '#63b3a6',
+      this.lineColor = "#63b3a6",
       this.lineThickness = 8,
       this.drawBackground = true,
       this.sampleTime = 60,
