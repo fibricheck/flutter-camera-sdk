@@ -73,6 +73,7 @@ class FibriCheckView extends StatefulWidget {
 class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObserver {
   // This is used in the platform side to register the view.
   static const String viewType = "fibricheckview";
+  static const String channelId = "channelId";
 
   int _counter = 0;
   Key? _key;
@@ -188,7 +189,7 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
   void _setupChannelId() {
     const uuid = Uuid();
     _channelId = uuid.v1().toString();
-    _creationParams["channelId"] = _channelId;
+    _creationParams[channelId] = _channelId;
   }
 
   Future<void> _onPlatformViewCreated(int id) async {

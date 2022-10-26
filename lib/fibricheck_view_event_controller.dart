@@ -20,6 +20,16 @@ class FibriCheckViewEventController {
   static const String eventMeasurementProcessed = "onMeasurementProcessed";
   static const String eventMeasurementError = "onMeasurementError";
 
+  static const String keySampleReadyPPG = "ppg";
+  static const String keySampleReadyRaw = "raw";
+  static const String keyFingerRemovedY = "y";
+  static const String keyFingerRemovedV = "v";
+  static const String keyFingerRemovedStdDevY = "stdDevY";
+  static const String keyHeartBeatHeartRate = "heartRate";
+  static const String keyEventTimeRemaining = "seconds";
+  static const String keyMeasurementProcessedMeasurement = "measurement";
+  static const String keyMeasurementErrorMessage = "message";
+
   late final EventChannel _channel;
 
   FibriCheckViewState? _fibriCheckViewState;
@@ -47,8 +57,8 @@ class FibriCheckViewEventController {
     var eventType = event[type];
     switch (eventType) {
       case eventSampleReady:
-        final ppg = event["ppg"] as double;
-        final raw = event["raw"] as double;
+        final ppg = event[keySampleReadyPPG] as double;
+        final raw = event[keySampleReadyRaw] as double;
 
         widget.onSampleReady(ppg, raw);
         break;
@@ -56,9 +66,9 @@ class FibriCheckViewEventController {
         widget.onFingerDetected();
         break;
       case eventFingerRemoved:
-        final y = event["y"] as double;
-        final v = event["v"] as double;
-        final stdDevY = event["stdDevY"] as double;
+        final y = event[keyFingerRemovedY] as double;
+        final v = event[keyFingerRemovedV] as double;
+        final stdDevY = event[keyFingerRemovedStdDevY] as double;
 
         widget.onFingerRemoved(y, v, stdDevY);
         break;
@@ -66,11 +76,11 @@ class FibriCheckViewEventController {
         widget.onCalibrationReady();
         break;
       case eventHeartBeat:
-        final heartRate = event["heartRate"] as int;
+        final heartRate = event[keyHeartBeatHeartRate] as int;
         widget.onHeartBeat(heartRate);
         break;
       case eventTimeRemaining:
-        final timeRemaining = event["seconds"] as int;
+        final timeRemaining = event[keyEventTimeRemaining] as int;
         widget.onTimeRemaining(timeRemaining);
         break;
       case eventMeasurementFinished:
@@ -92,11 +102,11 @@ class FibriCheckViewEventController {
         widget.onMovementDetected();
         break;
       case eventMeasurementProcessed:
-        final measurementJson = event["measurement"] as String;
+        final measurementJson = event[keyMeasurementProcessedMeasurement] as String;
         widget.onMeasurementProcessed(measurementJson);
         break;
       case eventMeasurementError:
-        final message = event["message"] as String;
+        final message = event[keyMeasurementErrorMessage] as String;
         widget.onMeasurementError(message);
         break;
     }
