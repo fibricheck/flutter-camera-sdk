@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
         backgroundColor: FCColors.brokenWhite,
         appBar: AppBar(
           backgroundColor: FCColors.green,
-          title: const Text('Fibricheck example app'),
+          title: const Text("Fibricheck example app"),
         ),
         body: Column(
           children: [
