@@ -142,7 +142,7 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
         );
         break;
       case TargetPlatform.iOS:
-        return UiKitView(
+        view = UiKitView(
           key: _key,
           viewType: viewType,
           layoutDirection: TextDirection.ltr,
@@ -150,6 +150,7 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
           creationParams: _creationParams,
           creationParamsCodec: const StandardMessageCodec(),
         );
+        break;
       default:
         throw UnsupportedError('Unsupported platform view');
     }
