@@ -132,14 +132,14 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
     Widget view;
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        view = AndroidView(
+        view = IgnorePointer(child: AndroidView(
           key: _key,
           viewType: viewType, // To know which native-side factory is used.
           layoutDirection: TextDirection.ltr,
           onPlatformViewCreated: _onPlatformViewCreated,
           creationParams: _creationParams,
           creationParamsCodec: const StandardMessageCodec(),
-        );
+        ));
         break;
       case TargetPlatform.iOS:
         return UiKitView(
@@ -155,7 +155,7 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
     }
 
     // ignore user inputs.
-    return IgnorePointer(child: view);
+    return view;
   }
 
   @override
