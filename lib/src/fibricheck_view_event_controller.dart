@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
 import 'fibricheck_view.dart';
@@ -29,6 +31,7 @@ class FibriCheckViewEventController {
   static const String keyEventTimeRemaining = "seconds";
   static const String keyMeasurementProcessedMeasurement = "measurement";
   static const String keyMeasurementErrorMessage = "message";
+  static const String keyMeasurementTimestamp = "measurement_timestamp";
 
   late final EventChannel _channel;
 
@@ -102,7 +105,8 @@ class FibriCheckViewEventController {
         widget.onMovementDetected();
         break;
       case eventMeasurementProcessed:
-        final measurementJson = event[keyMeasurementProcessedMeasurement] as String;
+        final measurementJson = jsonDecode(event[keyMeasurementProcessedMeasurement]);
+        measurementJson[keyMeasurementTimestamp] = DateTime.now().millisecondsSinceEpoch;
         widget.onMeasurementProcessed(measurementJson);
         break;
       case eventMeasurementError:
