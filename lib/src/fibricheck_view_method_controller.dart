@@ -42,7 +42,7 @@ class FibriCheckViewMethodController {
   bool? _waitForStartRecordingSignal;
 
   FibriCheckViewMethodController(String id) {
-    _channel = MethodChannel('com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_method');
+    _channel = MethodChannel("com.fibricheck.camera_sdk/flutterFibriCheckView_${id}_method");
   } 
 
   Future<void> allPropertiesInitialized() async {
