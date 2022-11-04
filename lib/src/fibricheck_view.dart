@@ -26,7 +26,7 @@ class FibriCheckView extends StatefulWidget {
   late final Function onPulseDetected;
   late final Function onPulseDetectionTimeExpired;
   late final Function onMovementDetected;
-  late final Function(String measurementJson) onMeasurementProcessed;
+  late final Function(Map<String, dynamic> measurementJson) onMeasurementProcessed;
   late final Function(String message) onMeasurementError;
 
   FibriCheckView({
@@ -44,7 +44,7 @@ class FibriCheckView extends StatefulWidget {
     Function? onPulseDetected,
     Function? onPulseDetectionTimeExpired,
     Function? onMovementDetected,
-    Function(String measurement)? onMeasurementProcessed,
+    Function(Map<String, dynamic> measurement)? onMeasurementProcessed,
     Function(String message)? onMeasurementError,
   }) : super(key: key) {
     _fibriCheckViewProperties = fibriCheckViewProperties ?? FibriCheckViewProperties();
