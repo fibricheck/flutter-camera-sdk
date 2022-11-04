@@ -95,7 +95,7 @@ class FibriCheckViewEventController {
         break;
       case eventMeasurementProcessed:
         final measurementJson = jsonDecode(event["measurement"]);
-        measurementJson["measurement_timestamp"] = DateTime.now().microsecondsSinceEpoch;
+        measurementJson["measurement_timestamp"] = DateTime.now().millisecondsSinceEpoch;
         widget.onMeasurementProcessed(measurementJson);
         break;
       case eventMeasurementError:
