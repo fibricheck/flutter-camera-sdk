@@ -177,7 +177,6 @@ class FibriCheckViewState extends State<FibriCheckView>
     }
 
     super.dispose();
-    debugPrint("$_counter Dispose");
   }
 
   Future<void> _stopNativeSideAndResetTheChannel() async {
