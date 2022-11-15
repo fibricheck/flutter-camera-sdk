@@ -26,7 +26,8 @@ class FibriCheckView extends StatefulWidget {
   late final Function onPulseDetected;
   late final Function onPulseDetectionTimeExpired;
   late final Function onMovementDetected;
-  late final Function(Map<String, dynamic> measurementJson) onMeasurementProcessed;
+  late final Function(Map<String, dynamic> measurementJson)
+      onMeasurementProcessed;
   late final Function(String message) onMeasurementError;
 
   FibriCheckView({
@@ -47,11 +48,13 @@ class FibriCheckView extends StatefulWidget {
     Function(Map<String, dynamic> measurement)? onMeasurementProcessed,
     Function(String message)? onMeasurementError,
   }) : super(key: key) {
-    _fibriCheckViewProperties = fibriCheckViewProperties ?? FibriCheckViewProperties();
+    _fibriCheckViewProperties =
+        fibriCheckViewProperties ?? FibriCheckViewProperties();
 
     this.onFingerDetected = onFingerDetected ?? () => {};
     this.onFingerRemoved = onFingerRemoved ?? (y, v, stdDevY) => {};
-    this.onFingerDetectionTimeExpired = onFingerDetectionTimeExpired ?? () => {};
+    this.onFingerDetectionTimeExpired =
+        onFingerDetectionTimeExpired ?? () => {};
     this.onCalibrationReady = onCalibrationReady ?? () => {};
     this.onHeartBeat = onHeartBeat ?? (heartRate) => {};
     this.onMeasurementFinished = onMeasurementFinished ?? () => {};
@@ -70,19 +73,21 @@ class FibriCheckView extends StatefulWidget {
 }
 
 // WidgetsBindingObserver is an interface to say that that the current class observe the appLifecycle.
-class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObserver {
+class FibriCheckViewState extends State<FibriCheckView>
+    with WidgetsBindingObserver {
   // This is used in the platform side to register the view.
   static const String viewType = "fibricheckview";
   static const String channelId = "channelId";
 
-  int _counter = 0;
+  static int _counter = 0;
   Key? _key;
 
   FibriCheckViewState() {
     _key = Key(_counter.toString());
   }
 
-  String get graphBackgroundColor => widget._fibriCheckViewProperties.graphBackgroundColor;
+  String get graphBackgroundColor =>
+      widget._fibriCheckViewProperties.graphBackgroundColor;
 
   bool get drawGraph => widget._fibriCheckViewProperties.drawGraph;
 
@@ -104,13 +109,17 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
 
   bool get rotationEnabled => widget._fibriCheckViewProperties.rotationEnabled;
 
-  bool get movementDetectionEnabled => widget._fibriCheckViewProperties.movementDetectionEnabled;
+  bool get movementDetectionEnabled =>
+      widget._fibriCheckViewProperties.movementDetectionEnabled;
 
-  int get pulseDetectionExpiryTime => widget._fibriCheckViewProperties.pulseDetectionExpiryTime;
+  int get pulseDetectionExpiryTime =>
+      widget._fibriCheckViewProperties.pulseDetectionExpiryTime;
 
-  int get fingerDetectionExpiryTime => widget._fibriCheckViewProperties.fingerDetectionExpiryTime;
+  int get fingerDetectionExpiryTime =>
+      widget._fibriCheckViewProperties.fingerDetectionExpiryTime;
 
-  bool get waitForStartRecordingSignal => widget._fibriCheckViewProperties.waitForStartRecordingSignal;
+  bool get waitForStartRecordingSignal =>
+      widget._fibriCheckViewProperties.waitForStartRecordingSignal;
 
   String _channelId = "";
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
@@ -160,8 +169,13 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      _fibriCheckViewMethodController!.resetModule();
+    }
+
     super.dispose();
   }
 
@@ -169,8 +183,6 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
     // Let's be sure that the FibriChecker is stopped !
     await _fibriCheckViewMethodController?.resetModule();
 
-    _counter++;
-    _key = Key(_counter.toString());
     _setupChannelId();
   }
 
@@ -179,22 +191,31 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
     switch (state) {
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
-      case AppLifecycleState.paused: await _stopNativeSideAndResetTheChannel(); break;
-      case AppLifecycleState.resumed: setState(() {});
+      case AppLifecycleState.paused:
+        await _stopNativeSideAndResetTheChannel();
+        break;
+      case AppLifecycleState.resumed:
+        setState(() {});
     }
-
+    debugPrint("$_counter state: ${state.name}");
     super.didChangeAppLifecycleState(state);
   }
 
   void _setupChannelId() {
+    _counter++;
+    _key = Key(_counter.toString());
+
     const uuid = Uuid();
+
     _channelId = uuid.v1().toString();
     _creationParams[channelId] = _channelId;
   }
 
   Future<void> _onPlatformViewCreated(int id) async {
-    _fibriCheckViewEventController = FibriCheckViewEventController(_channelId, this);
-    _fibriCheckViewMethodController = FibriCheckViewMethodController(_channelId);
+    _fibriCheckViewEventController =
+        FibriCheckViewEventController(_channelId, this);
+    _fibriCheckViewMethodController =
+        FibriCheckViewMethodController(_channelId);
 
     await _setupProperties();
 
@@ -220,9 +241,13 @@ class FibriCheckViewState extends State<FibriCheckView> with WidgetsBindingObser
     await methodController.setGyroEnabled(gyroEnabled);
     await methodController.setAccEnabled(accEnabled);
     await methodController.setRotationEnabled(rotationEnabled);
-    await methodController.setMovementDetectionEnabled(movementDetectionEnabled);
-    await methodController.setPulseDetectionExpiryTime(pulseDetectionExpiryTime);
-    await methodController.setFingerDetectionExpiryTime(fingerDetectionExpiryTime);
-    await methodController.setWaitForStartRecordingSignal(waitForStartRecordingSignal);
+    await methodController
+        .setMovementDetectionEnabled(movementDetectionEnabled);
+    await methodController
+        .setPulseDetectionExpiryTime(pulseDetectionExpiryTime);
+    await methodController
+        .setFingerDetectionExpiryTime(fingerDetectionExpiryTime);
+    await methodController
+        .setWaitForStartRecordingSignal(waitForStartRecordingSignal);
   }
 }
