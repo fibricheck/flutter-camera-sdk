@@ -1,0 +1,12 @@
+{
+  "id": "S9QCG",
+  "name": "uuid",
+  "manufacturer": "yuli.dev",
+  "version": "3.0.6",
+  "releaseDate": "19/02/2022",
+  "description": "Version 3.0.x has breaking changes, please review changelog and documentation. UuidValue is still Experimental and the API for it is in flux, please pay attention to changelogs and versions.",
+  "keyValues": [],
+  "otherLibraryLinks": [],
+  "purpose": "Generate UUID",
+  "limitations": ""
+}
