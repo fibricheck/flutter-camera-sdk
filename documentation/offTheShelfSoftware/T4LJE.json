@@ -1,0 +1,12 @@
+{
+  "id": "T4LJE",
+  "name": "plugin_platform_interface",
+  "manufacturer": "flutter.dev",
+  "version": "2.0.2",
+  "releaseDate": "30/09/2021",
+  "description": "This package provides a base class for platform interfaces of federated flutter plugins.\n\nPlatform implementations should extend their platform interface classes rather than implement it as newly added methods to platform interfaces are not considered as breaking changes. Extending a platform interface ensures that subclasses will get the default implementations from the base class, while platform implementations that implements their platform interface will be broken by newly added methods.\n\nThis class package provides common functionality for platform interface to enforce that they are extended and not implemented.",
+  "keyValues": [],
+  "otherLibraryLinks": [],
+  "purpose": "This package provides a base class for platform interfaces of federated flutter plugins.",
+  "limitations": ""
+}

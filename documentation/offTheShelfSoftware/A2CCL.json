@@ -1,0 +1,12 @@
+{
+  "id": "A2CCL",
+  "name": "flutter-sdk",
+  "manufacturer": "Google",
+  "version": "3.3.4",
+  "releaseDate": "05/10/2022",
+  "description": "The Flutter SDK has the packages and command-line tools that you need to develop Flutter apps across platforms",
+  "keyValues": [],
+  "otherLibraryLinks": [],
+  "purpose": "Compile the application",
+  "limitations": ""
+}
