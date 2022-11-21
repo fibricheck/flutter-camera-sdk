@@ -4,7 +4,6 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.os.AsyncTask;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.ViewGroup;
 import com.qompium.fibrichecker.filters.FirFilter;
 import com.qompium.fibrichecker.filters.SGFilter;
