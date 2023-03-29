@@ -1,0 +1,11 @@
+{
+  "keyValues": [],
+  "testIds": [],
+  "origin": "user_need",
+  "updatedTime": 1680100632141,
+  "name": "Terminate a measurement",
+  "attachments": [],
+  "type": "requirement",
+  "id": "RGX3N",
+  "description": "When a measurement has been terminated (early) all resources should be cleaned"
+}
