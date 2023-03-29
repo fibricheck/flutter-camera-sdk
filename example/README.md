@@ -1,6 +1,7 @@
 # camera_sdk_example
 
 Demonstrates how to use the camera_sdk plugin.
+To run this example, cd to this folder and execute `flutter run`
 
 ## Getting Started
 
