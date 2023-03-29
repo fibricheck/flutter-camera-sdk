@@ -1,0 +1,24 @@
+{
+  "id": "WBGC7",
+  "name": "Check if the assigned resources are cleared when they are not necessary anymore",
+  "type": "manual",
+  "tier": "None",
+  "planStatus": "Planned",
+  "motivation": "",
+  "testSteps": [
+    "Start a measurement",
+    "Reset the measurement (by for example removing you finger from the camera)",
+    "Finish the measurement",
+    "Take a new measurement",
+    "Go back to the previous screen while measuring"
+  ],
+  "expectedResult": "The resources should always be cleared when the measurement stops.\nYou can check this in the RAM usage",
+  "requiredTestEnvironmentIds": [],
+  "keyValues": [],
+  "parentNames": [
+    "Execute a measurement",
+    "Terminate a measurement",
+    "The SDK will clears up its resources when not necessary anymore"
+  ],
+  "updatedTime": 1680100578366
+}
