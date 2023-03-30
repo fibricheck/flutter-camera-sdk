@@ -1,0 +1,13 @@
+{
+  "keyValues": [],
+  "testIds": [
+    "WBGC7"
+  ],
+  "origin": "user_need",
+  "updatedTime": 1680100029981,
+  "name": "The SDK will clears up its resources when not necessary anymore",
+  "attachments": [],
+  "type": "specification",
+  "id": "7XR8A",
+  "description": "When the measurement is done or reset or when the screen is destroyed, the assigned resources will be cleared"
+}

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.hardware.Sensor;
 import android.os.AsyncTask;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.ViewGroup;
 import com.qompium.fibrichecker.filters.FirFilter;
 import com.qompium.fibrichecker.filters.SGFilter;
@@ -491,7 +492,13 @@ public abstract class FibriChecker implements CameraListener {
 
   protected void destroyListeners() {
 
-    sensorListener.destroyListener();
+    try {
+      if (sensorListener != null) {
+        sensorListener.destroyListener();
+      }
+    } catch (Exception e) {
+      Log.e(TAG, e.toString());
+    }
   }
 
   private void finishMeasurement() {
