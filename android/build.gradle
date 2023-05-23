@@ -16,14 +16,7 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/fibricheck/android-camera-sdk")
-            credentials {
-                username = System.getenv("GITHUB_USERNAME")
-                password = System.getenv("GITHUB_TOKEN")
-            }
-        }
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -47,7 +40,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'com.qompium:fibricheck-camera-sdk:0.3.0'
+	implementation 'com.github.fibricheck:android-camera-sdk:v0.3.1'
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support:support-v13:27.1.1'
     implementation 'com.google.code.gson:gson:+'
