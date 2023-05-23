@@ -1,4 +1,4 @@
-package com.qompium.fibrichecker;
+package com.fibricheck.camera_sdk;
 
 import android.app.Activity;
 import android.content.Context;
