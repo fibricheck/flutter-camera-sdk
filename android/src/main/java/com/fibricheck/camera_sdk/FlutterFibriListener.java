@@ -3,8 +3,8 @@ package com.fibricheck.camera_sdk;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.qompium.fibricheck_camera_sdk.listeners.IFibriListener;
-import com.qompium.fibricheck_camera_sdk.measurement.MeasurementData;
+import com.qompium.fibricheck.camerasdk.listeners.IFibriListener;
+import com.qompium.fibricheck.camerasdk.measurement.MeasurementData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
