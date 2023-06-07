@@ -13,6 +13,8 @@ import io.flutter.plugin.platform.PlatformViewFactory;
 import java.security.InvalidParameterException;
 import java.util.Map;
 
+import com.fibricheck.camera_sdk.Utils;
+
 public class FlutterFibriCheckViewFactory extends PlatformViewFactory {
     private final BinaryMessenger messenger;
 
@@ -31,6 +33,6 @@ public class FlutterFibriCheckViewFactory extends PlatformViewFactory {
 
         final Map<String, Object> creationParams = args == null ? null : (Map<String,Object>)args;
 
-        return new FlutterFibriCheckView(context, messenger, viewId, creationParams);
+        return new FlutterFibriCheckView(Utils.getActivity(context), messenger, viewId, creationParams);
     }
 }

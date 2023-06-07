@@ -105,7 +105,10 @@ class _MyAppState extends State<MyApp> {
                               _status = "Measurement finished!";
                             }),
                           },
-                          onMeasurementProcessed: (measurement) => debugPrint("Flutter onMeasurementProcessed $measurement"),
+                          onMeasurementProcessed: (measurement) => {
+                            debugPrint("Flutter onMeasurementProcessed $measurement"),
+                            debugPrint("Rate " + measurement["heartrate"].toString()),
+                          },
                           onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
                           onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
                           onPulseDetected: () => {

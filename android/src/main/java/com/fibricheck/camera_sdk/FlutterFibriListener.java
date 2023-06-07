@@ -3,8 +3,8 @@ package com.fibricheck.camera_sdk;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.qompium.fibrichecker.listeners.IFibriListener;
-import com.qompium.fibrichecker.measurement.MeasurementData;
+import com.qompium.fibricheck.camerasdk.listeners.IFibriListener;
+import com.qompium.fibricheck.camerasdk.measurement.MeasurementData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,7 +91,7 @@ public class FlutterFibriListener implements EventChannel.StreamHandler, IFibriL
     }
 
     @Override
-    public void timeRemaining(int seconds) {
+    public void onTimeRemaining(int seconds) {
         HashMap<String, Object> params = new HashMap<>();
         params.put("seconds", seconds);
 
@@ -126,6 +126,11 @@ public class FlutterFibriListener implements EventChannel.StreamHandler, IFibriL
     @Override
     public void onMovementDetected() {
         publishEvent(EVENT_MOVEMENT_DETECTED, new HashMap<>());
+    }
+
+    @Override
+    public void onMeasurementError(String err){
+        // empty implementation
     }
 
     @Override

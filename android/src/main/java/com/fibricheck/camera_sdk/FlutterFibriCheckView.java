@@ -21,8 +21,8 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-import com.qompium.fibrichecker.FibriChecker;
-import com.qompium.fibrichecker.Utils;
+import com.qompium.fibricheck.camerasdk.FibriChecker;
+import com.fibricheck.camera_sdk.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
