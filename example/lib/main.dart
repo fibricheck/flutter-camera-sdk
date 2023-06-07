@@ -107,7 +107,6 @@ class _MyAppState extends State<MyApp> {
                           },
                           onMeasurementProcessed: (measurement) => {
                             debugPrint("Flutter onMeasurementProcessed $measurement"),
-                            debugPrint("Rate " + measurement["heartrate"].toString()),
                           },
                           onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
                           onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
