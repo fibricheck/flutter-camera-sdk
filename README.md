@@ -92,4 +92,4 @@ When the permissions are all set up, you can implement the FibriCheck widget lik
 ```
 
 ## License
-This SDK is proprietary. See `LICENCE` for more information.
+This SDK is proprietary. See `LICENSE` for more information.
