@@ -90,3 +90,6 @@ When the permissions are all set up, you can implement the FibriCheck widget lik
         onTimeRemaining: (seconds) => debugPrint("Flutter onTimeRemaining $seconds"),
     ),
 ```
+
+## License
+This SDK is proprietary. See `LICENSE` for more information.
