@@ -196,6 +196,9 @@ class FibriCheckViewState extends State<FibriCheckView>
         break;
       case AppLifecycleState.resumed:
         setState(() {});
+        break;
+      default:
+        break;
     }
     debugPrint("$_counter state: ${state.name}");
     super.didChangeAppLifecycleState(state);
