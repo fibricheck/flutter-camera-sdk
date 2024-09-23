@@ -1,5 +1,5 @@
 #import "FLFibriCheckViewController.h"
-#import "FibricheckerComponent/FibriCheckerComponent.h"
+#import "FibriCheckerComponent.h"
 #import "FLFibriCheckStreamHandler.h"
 
 @implementation FLFibriCheckViewControllerFactory {
@@ -30,7 +30,7 @@
 @end
 
 @interface FLFibriCheckViewController ()
-@property (nonatomic, strong) FLFibriChecker *fibrichecker;
+@property (nonatomic, strong) FibriChecker *fibrichecker;
 @end
 
 @implementation FLFibriCheckViewController{
@@ -184,7 +184,7 @@
 
 // MARK: - UI
 - (void)viewDidLoad {
-    self.fibrichecker = [FLFibriChecker new];
+    self.fibrichecker = [FibriChecker new];
     [self addListeners];
 }
 

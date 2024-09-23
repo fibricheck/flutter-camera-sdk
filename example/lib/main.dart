@@ -105,7 +105,9 @@ class _MyAppState extends State<MyApp> {
                               _status = "Measurement finished!";
                             }),
                           },
-                          onMeasurementProcessed: (measurement) => debugPrint("Flutter onMeasurementProcessed $measurement"),
+                          onMeasurementProcessed: (measurement) => {
+                            debugPrint("Flutter onMeasurementProcessed $measurement"),
+                          },
                           onMeasurementStart: () => debugPrint("Flutter onMeasurementStart"),
                           onMovementDetected: () => debugPrint("Flutter onMovementDetected"),
                           onPulseDetected: () => {
