@@ -25,7 +25,6 @@ apply plugin: 'com.android.library'
 android {
     namespace "com.fibricheck.camera_sdk"
     compileSdkVersion 34
-    ndkVersion "27.0.12077973"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
