@@ -7,9 +7,9 @@ class DemoTitleWidget extends StatefulWidget {
   final String title;
 
   const DemoTitleWidget({
-    Key? key,
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   State<DemoTitleWidget> createState() => _DemoTitleWidgetState();

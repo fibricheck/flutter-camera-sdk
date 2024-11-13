@@ -8,10 +8,10 @@ class DemoMetricsWidget extends StatefulWidget {
   final String heartBeat;
 
   const DemoMetricsWidget({
-    Key? key,
+    super.key,
     required this.timeRemaining,
     required this.heartBeat,
-  }) : super(key: key);
+  });
 
   @override
   State<DemoMetricsWidget> createState() => _DemoMetricsWidgetState();

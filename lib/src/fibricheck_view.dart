@@ -31,7 +31,7 @@ class FibriCheckView extends StatefulWidget {
   late final Function(String message) onMeasurementError;
 
   FibriCheckView({
-    Key? key,
+    super.key,
     FibriCheckViewProperties? fibriCheckViewProperties,
     Function? onFingerDetected,
     Function(double y, double v, double stdDevY)? onFingerRemoved,
@@ -47,7 +47,7 @@ class FibriCheckView extends StatefulWidget {
     Function? onMovementDetected,
     Function(Map<String, dynamic> measurement)? onMeasurementProcessed,
     Function(String message)? onMeasurementError,
-  }) : super(key: key) {
+  }) {
     _fibriCheckViewProperties =
         fibriCheckViewProperties ?? FibriCheckViewProperties();
 
@@ -174,6 +174,7 @@ class FibriCheckViewState extends State<FibriCheckView>
 
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       _fibriCheckViewMethodController!.resetModule();
+    
     }
 
     super.dispose();
@@ -189,6 +190,7 @@ class FibriCheckViewState extends State<FibriCheckView>
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
+      case AppLifecycleState.hidden:
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
