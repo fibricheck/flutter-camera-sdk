@@ -67,118 +67,121 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Measurement'),
-      ),
-      body: Column(children: [
-      Expanded(
-        child: FutureBuilder(
-          future: _requestCameraPermission,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const DemoTitleWidget(
-                  title: "Requiring camera permission");
-            }
-
-            if (!_hasCameraPermission) {
-              return const DemoTitleWidget(
-                  title: "Camera permission not granted");
-            }
-            return Column(
-              children: [
-                DemoTitleWidget(title: _status),
-                Container(
-                  decoration: const BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: FCColors.lightGray, width: 1),
-                      bottom: BorderSide(color: FCColors.lightGray, width: 1),
-                    ),
-                  ),
-                  height: 200,
-                  child: FibriCheckView(
-                    fibriCheckViewProperties: FibriCheckViewProperties(
-                      flashEnabled: true,
-                      lineThickness: 2,
-                      // graphBackgroundColor: '#${FCColors.green.value.toRadixString(16)}'
-                      drawGraph: true,
-                      lineColor: '#${FCColors.bordeaux.value.toRadixString(16)}',
-                      drawBackground: true,
-                      sampleTime: 15,
-                      gravEnabled: false,
-                      gyroEnabled: false,
-                      accEnabled: false,
-                      rotationEnabled: false,
-                      movementDetectionEnabled: true,
-                      fingerDetectionExpiryTime: -1,
-                      pulseDetectionExpiryTime: 10,
-                      waitForStartRecordingSignal:  false
-                    ),
-                    onCalibrationReady: () => {
-                      debugPrint("Flutter onCalibrationReady"),
-                      setState(() {
-                        _status = "Recording heartbeat...";
-                      }),
-                    },
-                    onFingerDetected: () => {
-                      WakelockPlus.enable(),
-                      debugPrint("Flutter onFingerDetected"),
-                      setState(() {
-                        _status = "Detecting pulse...";
-                      }),
-                    },
-                    onFingerDetectionTimeExpired: () =>
-                        debugPrint("Flutter onFingerDetectionTimeExpired"),
-                    onFingerRemoved: (y, v, stdDevY) => {
-                      WakelockPlus.disable(),
-                      debugPrint("Flutter onFingerRemoved $y, $v, $stdDevY"),
-                    },
-                    onHeartBeat: (heartbeat) => {
-                      debugPrint("Flutter onHeartBeat $heartbeat"),
-                      setState(() {
-                        _heartBeat = heartbeat.toString();
-                      }),
-                    },
-                    onMeasurementFinished: () => {
-                      debugPrint("Flutter onMeasurementFinished"),
-                      setState(() {
-                        _status = "Measurement finished!";
-                      }),
-                    },
-                    onMeasurementProcessed: (measurement) => {
-                      debugPrint("Flutter onMeasurementProcessed $measurement"),
-                    },
-                    onMeasurementStart: () =>
-                        debugPrint("Flutter onMeasurementStart"),
-                    onMovementDetected: () =>
-                        debugPrint("Flutter onMovementDetected"),
-                    onPulseDetected: () => {
-                      debugPrint("Flutter onPulseDetected"),
-                      setState(() {
-                        _status = "Calibrating...";
-                      }),
-                    },
-                    onPulseDetectionTimeExpired: () =>
-                        debugPrint("Flutter onPulseDetectionTimeExpired"),
-                    onSampleReady: (ppg, raw) => {},
-                    //debugPrint("Flutter onSampleReady $ppg $raw"), -> prints often. Only uncomment when data is relevant
-                    onTimeRemaining: (seconds) => {
-                      debugPrint("Flutter onTimeRemaining $seconds"),
-                      setState(() {
-                        _timeRemaining = seconds.toString();
-                      }),
-                    },
-                    onMeasurementError: (message) =>
-                        debugPrint("Flutter onMeasurementError: $message"),
-                  ),
-                ),
-                DemoMetricsWidget(
-                    timeRemaining: _timeRemaining, heartBeat: _heartBeat),
-              ],
-            );
-          },
+        appBar: AppBar(
+          title: const Text('Measurement'),
         ),
-      ),
-    ]));
+        body: Column(children: [
+          Expanded(
+            child: FutureBuilder(
+              future: _requestCameraPermission,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const DemoTitleWidget(
+                      title: "Requiring camera permission");
+                }
+
+                if (!_hasCameraPermission) {
+                  return const DemoTitleWidget(
+                      title: "Camera permission not granted");
+                }
+                return Column(
+                  children: [
+                    DemoTitleWidget(title: _status),
+                    Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          top: BorderSide(color: FCColors.lightGray, width: 1),
+                          bottom:
+                              BorderSide(color: FCColors.lightGray, width: 1),
+                        ),
+                      ),
+                      height: 200,
+                      child: FibriCheckView(
+                        fibriCheckViewProperties: FibriCheckViewProperties(
+                            flashEnabled: true,
+                            lineThickness: 2,
+                            // graphBackgroundColor: '#${FCColors.green.value.toRadixString(16)}'
+                            drawGraph: true,
+                            lineColor:
+                                '#${FCColors.bordeaux.value.toRadixString(16)}',
+                            drawBackground: true,
+                            sampleTime: 15,
+                            gravEnabled: false,
+                            gyroEnabled: false,
+                            accEnabled: false,
+                            rotationEnabled: false,
+                            movementDetectionEnabled: true,
+                            fingerDetectionExpiryTime: -1,
+                            pulseDetectionExpiryTime: 10,
+                            waitForStartRecordingSignal: false),
+                        onCalibrationReady: () => {
+                          debugPrint("Flutter onCalibrationReady"),
+                          setState(() {
+                            _status = "Recording heartbeat...";
+                          }),
+                        },
+                        onFingerDetected: () => {
+                          WakelockPlus.enable(),
+                          debugPrint("Flutter onFingerDetected"),
+                          setState(() {
+                            _status = "Detecting pulse...";
+                          }),
+                        },
+                        onFingerDetectionTimeExpired: () =>
+                            debugPrint("Flutter onFingerDetectionTimeExpired"),
+                        onFingerRemoved: (y, v, stdDevY) => {
+                          WakelockPlus.disable(),
+                          debugPrint(
+                              "Flutter onFingerRemoved $y, $v, $stdDevY"),
+                        },
+                        onHeartBeat: (heartbeat) => {
+                          debugPrint("Flutter onHeartBeat $heartbeat"),
+                          setState(() {
+                            _heartBeat = heartbeat.toString();
+                          }),
+                        },
+                        onMeasurementFinished: () => {
+                          debugPrint("Flutter onMeasurementFinished"),
+                          setState(() {
+                            _status = "Measurement finished!";
+                          }),
+                        },
+                        onMeasurementProcessed: (measurement) => {
+                          debugPrint(
+                              "Flutter onMeasurementProcessed $measurement"),
+                        },
+                        onMeasurementStart: () =>
+                            debugPrint("Flutter onMeasurementStart"),
+                        onMovementDetected: () =>
+                            debugPrint("Flutter onMovementDetected"),
+                        onPulseDetected: () => {
+                          debugPrint("Flutter onPulseDetected"),
+                          setState(() {
+                            _status = "Calibrating...";
+                          }),
+                        },
+                        onPulseDetectionTimeExpired: () =>
+                            debugPrint("Flutter onPulseDetectionTimeExpired"),
+                        onSampleReady: (ppg, raw) => {},
+                        //debugPrint("Flutter onSampleReady $ppg $raw"), -> prints often. Only uncomment when data is relevant
+                        onTimeRemaining: (seconds) => {
+                          debugPrint("Flutter onTimeRemaining $seconds"),
+                          setState(() {
+                            _timeRemaining = seconds.toString();
+                          }),
+                        },
+                        onMeasurementError: (message) =>
+                            debugPrint("Flutter onMeasurementError: $message"),
+                      ),
+                    ),
+                    DemoMetricsWidget(
+                        timeRemaining: _timeRemaining, heartBeat: _heartBeat),
+                  ],
+                );
+              },
+            ),
+          ),
+        ]));
   }
 
   Future<void> _requestCameraPermissionImpl() async {
