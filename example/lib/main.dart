@@ -9,8 +9,8 @@ import 'package:camera_sdk_example/0_design_system/fc_colors.dart';
 import 'package:camera_sdk_example/5_ui/widgets/fc_title.dart';
 import 'package:camera_sdk_example/5_ui/widgets/fc_metrics.dart';
 
-class FirstRoute extends StatelessWidget {
-  const FirstRoute({super.key});
+class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +38,7 @@ void main() {
 
   runApp(const MaterialApp(
     title: 'Fibricheck Example',
-    home: FirstRoute(),
+    home: StartScreen(),
   ));
 }
 
@@ -100,7 +100,20 @@ class _MyAppState extends State<MyApp> {
                   child: FibriCheckView(
                     fibriCheckViewProperties: FibriCheckViewProperties(
                       flashEnabled: true,
-                      lineThickness: 4,
+                      lineThickness: 2,
+                      // graphBackgroundColor: '#${FCColors.green.value.toRadixString(16)}'
+                      drawGraph: true,
+                      lineColor: '#${FCColors.bordeaux.value.toRadixString(16)}',
+                      drawBackground: true,
+                      sampleTime: 15,
+                      gravEnabled: false,
+                      gyroEnabled: false,
+                      accEnabled: false,
+                      rotationEnabled: false,
+                      movementDetectionEnabled: true,
+                      fingerDetectionExpiryTime: -1,
+                      pulseDetectionExpiryTime: 10,
+                      waitForStartRecordingSignal:  false
                     ),
                     onCalibrationReady: () => {
                       debugPrint("Flutter onCalibrationReady"),
