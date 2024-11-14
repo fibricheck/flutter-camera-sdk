@@ -58,6 +58,8 @@ class _MyAppState extends State<MyApp> {
   String _heartBeat = "-";
   String _status = "Place your finger on the camera";
 
+  late FibriCheckViewMethodController _controller;
+
   @override
   initState() {
     super.initState();
@@ -156,8 +158,13 @@ class _MyAppState extends State<MyApp> {
                     },
                     onMeasurementError: (message) =>
                         debugPrint("Flutter onMeasurementError: $message"),
+                    onControllerCreated: (viewController) => {
+                      _controller = viewController
+                    },
                   ),
                 ),
+                TextButton(onPressed: onStopPressed, child: Text("Stop")),
+                TextButton(onPressed: onStartPressed, child: Text("Resume")),
                 DemoMetricsWidget(
                     timeRemaining: _timeRemaining, heartBeat: _heartBeat),
               ],
@@ -166,6 +173,14 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     ]));
+  }
+
+  Future<void> onStopPressed() async {
+    _controller.resetModule();
+  }
+
+  Future<void> onStartPressed() async {
+    _controller.allPropertiesInitialized();
   }
 
   Future<void> _requestCameraPermissionImpl() async {

@@ -5,8 +5,10 @@ import 'package:uuid/uuid.dart';
 
 import 'fibricheck_view_event_controller.dart';
 import 'fibricheck_view_method_controller.dart';
+export 'fibricheck_view_method_controller.dart';
 import 'fibricheck_view_properties.dart';
 export 'fibricheck_view_properties.dart';
+
 
 class MeasurementErrors {
   static const String brokenAccSensorError = "BROKEN_ACC_SENSOR";
@@ -30,6 +32,8 @@ class FibriCheckView extends StatefulWidget {
       onMeasurementProcessed;
   late final Function(String message) onMeasurementError;
 
+  final Function(FibriCheckViewMethodController) onControllerCreated;
+
   FibriCheckView({
     super.key,
     FibriCheckViewProperties? fibriCheckViewProperties,
@@ -47,6 +51,7 @@ class FibriCheckView extends StatefulWidget {
     Function? onMovementDetected,
     Function(Map<String, dynamic> measurement)? onMeasurementProcessed,
     Function(String message)? onMeasurementError,
+    required this.onControllerCreated
   }) {
     _fibriCheckViewProperties =
         fibriCheckViewProperties ?? FibriCheckViewProperties();
@@ -124,8 +129,8 @@ class FibriCheckViewState extends State<FibriCheckView>
   String _channelId = "";
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
 
-  FibriCheckViewEventController? _fibriCheckViewEventController;
-  FibriCheckViewMethodController? _fibriCheckViewMethodController;
+  late FibriCheckViewEventController _fibriCheckViewEventController;
+  late FibriCheckViewMethodController _fibriCheckViewMethodController;
 
   @override
   void initState() {
@@ -173,7 +178,7 @@ class FibriCheckViewState extends State<FibriCheckView>
     WidgetsBinding.instance.removeObserver(this);
 
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      _fibriCheckViewMethodController!.resetModule();
+      _fibriCheckViewMethodController.resetModule();
     
     }
 
@@ -182,7 +187,7 @@ class FibriCheckViewState extends State<FibriCheckView>
 
   Future<void> _stopNativeSideAndResetTheChannel() async {
     // Let's be sure that the FibriChecker is stopped !
-    await _fibriCheckViewMethodController?.resetModule();
+    await _fibriCheckViewMethodController.resetModule();
 
     _setupChannelId();
   }
@@ -221,16 +226,14 @@ class FibriCheckViewState extends State<FibriCheckView>
 
     await _setupProperties();
 
-    _fibriCheckViewEventController!.subscribe();
-    _fibriCheckViewMethodController!.allPropertiesInitialized();
+    _fibriCheckViewEventController.subscribe();
+    _fibriCheckViewMethodController.allPropertiesInitialized();
+
+    widget.onControllerCreated(_fibriCheckViewMethodController);
   }
 
   Future<void> _setupProperties() async {
     final methodController = _fibriCheckViewMethodController;
-
-    if (methodController == null) {
-      return;
-    }
 
     await methodController.setGraphBackgroundColor(graphBackgroundColor);
     await methodController.setDrawGraph(drawGraph);

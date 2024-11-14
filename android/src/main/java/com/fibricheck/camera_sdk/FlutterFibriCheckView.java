@@ -3,13 +3,11 @@ package com.fibricheck.camera_sdk;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Insets;
 import android.os.Build;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +20,11 @@ import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.qompium.fibricheck.camerasdk.FibriChecker;
-import com.fibricheck.camera_sdk.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -63,50 +61,87 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
 
     private final Context context;
 
-    @NonNull
-    private final MethodChannel methodChannel;
-    private final EventChannel eventChannel;
-    private final FlutterFibriListener flutterFibriListener;
+    @NonNull private final MethodChannel methodChannel;
+    @NonNull private final EventChannel eventChannel;
+    @NonNull private final FlutterFibriListener flutterFibriListener;
 
     private boolean drawGraphPoints = false;
 
-    private LineGraphSeries<DataPoint> series;
-
-    private ArrayList<Double> valueSR;
+    @NonNull private final LineGraphSeries<DataPoint> series = new LineGraphSeries<>();
+    @NonNull private final ArrayList<Double> valueSR = new ArrayList<>();
 
     private int xValue = 0;
 
-    private GraphView graphView;
-
-    private LinearLayout linearLayout;
-
+    @NonNull final private GraphView graphView;
+    @NonNull final private View view;
+    
     private FibriChecker fibriChecker;
 
     FlutterFibriCheckView(@NonNull Context context, BinaryMessenger messenger, int id, @Nullable Map<String, Object> creationParams) {
         this.context = context;
 
-        String channelId = creationParams == null ? "" : (String) creationParams.get("channelId");
+        String channelId = creationParams == null ? "" : (String) Objects.requireNonNullElse(creationParams.get("channelId"), "");
         String channelName = "com.fibricheck.camera_sdk/flutterFibriCheckView_" + channelId;
 
+        // Init final member variables
+        flutterFibriListener = new FlutterFibriListener(this);
         methodChannel = new MethodChannel(messenger, channelName + "_method");
         methodChannel.setMethodCallHandler(this);
-
-        flutterFibriListener = new FlutterFibriListener(this);
-
         eventChannel = new EventChannel(messenger, channelName  + "_event");
         eventChannel.setStreamHandler(flutterFibriListener);
+
+        graphView = createGraphView(context);
+        view = createView();
+
+        init();
+    }
+
+    private void init() {
+        setupSeries();
+    }
+
+    private void setupSeries() {
+        series.resetData(new DataPoint[0]);
+        series.setColor(Color.BLUE);
+        series.setThickness(8);
+        series.setBackgroundColor(Color.TRANSPARENT);
+        series.setDrawBackground(true);
+
+        int width = getScreenWidth(context);
+        boolean drawAsPath = width >= 1080;
+
+        series.setDrawAsPath(drawAsPath);
+    }
+
+    private void destroy() {
+        fibriChecker.stop();
+        methodChannel.setMethodCallHandler(null);
+        eventChannel.setStreamHandler(null);
+
+        valueSR.clear();
+        graphView.removeAllSeries();
+    }
+
+    private LinearLayout createView() {
+        LinearLayout linearLayout = new LinearLayout(context);
+        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.addView(graphView);
+
+        fibriChecker = new FibriChecker.FibriBuilder(context, linearLayout).build();
+        fibriChecker.setFibriListener(flutterFibriListener);
+
+        return linearLayout;
     }
 
     @Override
     public View getView() {
-        return createView();
+        return view;
     }
 
     @Override
     public void dispose() {
-        fibriChecker.stop();
-        methodChannel.setMethodCallHandler(null);
-        eventChannel.setStreamHandler(null);
+        destroy();
     }
 
     //region Props Setters
@@ -140,7 +175,6 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
 
     public void setSampleTime(int sampleTime) {
         fibriChecker.sampleTime = sampleTime;
-        Log.i(TAG, "Sampletime set to: " + sampleTime);
     }
 
     public void setPulseDetectionExpiryTime(int pulseDetectionExpiryTime) {
@@ -280,32 +314,13 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         }
     }
 
-    private LinearLayout createView() {
-
-        Log.i(TAG, "Creating View instance");
-
-        linearLayout = new LinearLayout(context);
-        linearLayout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
-
-        valueSR = new ArrayList<>();
-        graphView = createGraphView(context);
-
-        linearLayout.addView(graphView);
-
-        fibriChecker = new FibriChecker.FibriBuilder(context, linearLayout).build();
-        fibriChecker.setFibriListener(flutterFibriListener);
-
-        return linearLayout;
-    }
-
     //region Graphs
     private GraphView createGraphView(Context context) {
-        graphView = new GraphView(context);
-        invalidateGraphView(graphView, context);
+        final GraphView newGraphView = new GraphView(context);
+        invalidateGraphView(newGraphView, context);
+        newGraphView.addSeries(series);
 
-        Log.i(TAG, "W X H: " + graphView.getWidth() + " x " + graphView.getHeight());
-        return graphView;
+        return newGraphView;
     }
 
     private void invalidateGraphView(GraphView graphView, Context context) {
@@ -314,7 +329,6 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         params.gravity = Gravity.CENTER_HORIZONTAL;
         graphView.setLayoutParams(params);
         setViewPortOptions(graphView);
-        setSeries(graphView, context);
     }
 
     private void setViewPortOptions(GraphView graphView) {
@@ -325,32 +339,6 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         viewport.setYAxisBoundsManual(true);
         viewport.setMinX(0);
         viewport.setMaxX(SAMPLE_COUNT);
-    }
-
-    private void setSeries(GraphView graphView, Context context) {
-        ArrayList<DataPoint> dataPoints = new ArrayList<>();
-
-        // fill array wih empty values
-        DataPoint[] data = new DataPoint[SAMPLE_COUNT];
-        for (int i = 0; i < SAMPLE_COUNT; i++) {
-            data[i] = new DataPoint(0, 0);
-        }
-
-        this.series = new LineGraphSeries<DataPoint>(data);
-
-        series = new LineGraphSeries<>(dataPoints.toArray(new DataPoint[dataPoints.size()]));
-        series.setColor(Color.BLUE);
-        series.setThickness(8);
-        series.setBackgroundColor(Color.TRANSPARENT);
-        series.setDrawBackground(true);
-
-        int width = getScreenWidth(context);
-        boolean drawAsPath = width >= 1080;
-
-        series.setDrawAsPath(drawAsPath);
-
-        graphView.removeAllSeries();
-        graphView.addSeries(series);
     }
 
     private int getScreenWidth(Context context) {
@@ -390,7 +378,6 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
     }
 
     private void addValueToSR(double value) {
-
         valueSR.add(value);
         if (valueSR.size() > SAMPLE_COUNT) {
             valueSR.remove(0);
