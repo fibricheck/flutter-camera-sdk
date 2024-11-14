@@ -28,6 +28,8 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 import io.flutter.plugin.common.BinaryMessenger;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
@@ -72,10 +74,9 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
 
     private int xValue = 0;
 
-    @NonNull final private GraphView graphView;
-    @NonNull final private View view;
-    
-    private FibriChecker fibriChecker;
+    @NonNull private final GraphView graphView;
+    @NonNull private final LinearLayout linearLayout;
+    @NonNull private final FibriChecker fibriChecker;
 
     FlutterFibriCheckView(@NonNull Context context, BinaryMessenger messenger, int id, @Nullable Map<String, Object> creationParams) {
         this.context = context;
@@ -91,12 +92,9 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         eventChannel.setStreamHandler(flutterFibriListener);
 
         graphView = createGraphView(context);
-        view = createView();
+        linearLayout = createView();
+        fibriChecker = createFibriChecker();
 
-        init();
-    }
-
-    private void init() {
         setupSeries();
     }
 
@@ -128,15 +126,20 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.addView(graphView);
 
-        fibriChecker = new FibriChecker.FibriBuilder(context, linearLayout).build();
-        fibriChecker.setFibriListener(flutterFibriListener);
-
         return linearLayout;
     }
 
+    private FibriChecker createFibriChecker() {
+        FibriChecker newFibriChecker = new FibriChecker.FibriBuilder(context, linearLayout).build();
+        newFibriChecker.setFibriListener(flutterFibriListener);
+
+        return  newFibriChecker;
+    }
+
+    @NonNull
     @Override
     public View getView() {
-        return view;
+        return linearLayout;
     }
 
     @Override
@@ -145,7 +148,6 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
     }
 
     //region Props Setters
-
     public void setDrawGraph(boolean drawGraph) {
         drawGraphPoints = drawGraph;
     }
@@ -317,21 +319,19 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
     //region Graphs
     private GraphView createGraphView(Context context) {
         final GraphView newGraphView = new GraphView(context);
-        invalidateGraphView(newGraphView, context);
-        newGraphView.addSeries(series);
+        setupGraphView(newGraphView);
 
         return newGraphView;
     }
 
-    private void invalidateGraphView(GraphView graphView, Context context) {
+    private void setupGraphView(GraphView graphView) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        graphView.setBackgroundColor(Color.TRANSPARENT);
         params.gravity = Gravity.CENTER_HORIZONTAL;
-        graphView.setLayoutParams(params);
-        setViewPortOptions(graphView);
-    }
 
-    private void setViewPortOptions(GraphView graphView) {
+        graphView.setBackgroundColor(Color.TRANSPARENT);
+        graphView.setLayoutParams(params);
+        graphView.addSeries(series);
+
         Viewport viewport = graphView.getViewport();
         viewport.setScalable(false);
         viewport.setScrollable(false);
@@ -343,27 +343,30 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
 
     private int getScreenWidth(Context context) {
         Activity activity = Utils.getActivity(context);
-
-        if (activity == null){
+        if (activity == null) {
             return Resources.getSystem().getDisplayMetrics().widthPixels;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
-            Insets insets = windowMetrics.getWindowInsets()
-                    .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
-            return windowMetrics.getBounds().width() - insets.left - insets.right;
+            return getScreenWidthAboveAndroidR(activity);
         } else {
             return getScreenWidthBelowAndroidR(activity);
         }
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
-    @SuppressWarnings("deprecation")
     private int getScreenWidthBelowAndroidR(@NonNull Activity activity) {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         activity.getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    private int getScreenWidthAboveAndroidR(@NonNull Activity activity) {
+        WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+        Insets insets = windowMetrics.getWindowInsets()
+                .getInsetsIgnoringVisibility(WindowInsets.Type.systemBars());
+        return windowMetrics.getBounds().width() - insets.left - insets.right;
     }
 
     private void addGraphData(double value) {
@@ -373,6 +376,7 @@ public class FlutterFibriCheckView implements PlatformView, MethodChannel.Method
 
     private void calculateYaxisBoundaries(double value) {
         addValueToSR(value);
+
         graphView.getViewport().setMaxY(Collections.max(valueSR) + 0.2);
         graphView.getViewport().setMinY(Collections.min(valueSR) - 0.2);
     }
