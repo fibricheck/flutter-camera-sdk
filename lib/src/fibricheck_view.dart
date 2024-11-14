@@ -5,7 +5,7 @@ import 'package:uuid/uuid.dart';
 
 import 'fibricheck_view_event_controller.dart';
 import 'fibricheck_view_method_controller.dart';
-export 'fibricheck_view_method_controller.dart';
+// export 'fibricheck_view_method_controller.dart';
 import 'fibricheck_view_properties.dart';
 export 'fibricheck_view_properties.dart';
 
@@ -32,7 +32,7 @@ class FibriCheckView extends StatefulWidget {
       onMeasurementProcessed;
   late final Function(String message) onMeasurementError;
 
-  final Function(FibriCheckViewMethodController) onControllerCreated;
+  // final Function(FibriCheckViewMethodController) onControllerCreated;
 
   FibriCheckView({
     super.key,
@@ -51,7 +51,7 @@ class FibriCheckView extends StatefulWidget {
     Function? onMovementDetected,
     Function(Map<String, dynamic> measurement)? onMeasurementProcessed,
     Function(String message)? onMeasurementError,
-    required this.onControllerCreated
+    // required this.onControllerCreated
   }) {
     _fibriCheckViewProperties =
         fibriCheckViewProperties ?? FibriCheckViewProperties();
@@ -229,7 +229,7 @@ class FibriCheckViewState extends State<FibriCheckView>
     _fibriCheckViewEventController.subscribe();
     _fibriCheckViewMethodController.allPropertiesInitialized();
 
-    widget.onControllerCreated(_fibriCheckViewMethodController);
+    // widget.onControllerCreated(_fibriCheckViewMethodController);
   }
 
   Future<void> _setupProperties() async {
