@@ -222,8 +222,6 @@ class FibriCheckViewState extends State<FibriCheckView>
 
     _fibriCheckViewEventController.subscribe();
     _fibriCheckViewMethodController.allPropertiesInitialized();
-
-    // widget.onControllerCreated(_fibriCheckViewMethodController);
   }
 
   Future<void> _setupProperties() async {
