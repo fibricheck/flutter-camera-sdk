@@ -7,6 +7,8 @@
 
 - (id)init {
     self = [super init];
+    self.backgroundColor = [UIColor clearColor];
+    self.opaque = NO;
     self.drawGraph = false;
     self.drawBackground = false;
     return self;
@@ -28,7 +30,7 @@
     CGContextRef context=UIGraphicsGetCurrentContext();
     CGContextClearRect(context, self.bounds);
     
-    [[UIColor whiteColor] setFill];
+    [[UIColor clearColor] setFill];
     UIRectFill(rect);
     
     if(self.drawBackground)
