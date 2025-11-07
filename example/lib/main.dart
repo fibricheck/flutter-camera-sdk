@@ -100,10 +100,10 @@ class _MyAppState extends State<MyApp> {
                         fibriCheckViewProperties: FibriCheckViewProperties(
                             flashEnabled: true,
                             lineThickness: 2,
-                            // graphBackgroundColor: '#${FCColors.green.value.toRadixString(16)}'
+                            // graphBackgroundColor: '#C72727'
                             drawGraph: true,
                             lineColor:
-                                '#${FCColors.bordeaux.value.toRadixString(16)}',
+                                '#C72727',
                             drawBackground: true,
                             sampleTime: 15,
                             gravEnabled: false,
