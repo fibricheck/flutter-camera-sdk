@@ -31,7 +31,7 @@ class FibriCheckView extends StatefulWidget {
   late final Function(String message) onMeasurementError;
 
   FibriCheckView({
-    Key? key,
+    super.key,
     FibriCheckViewProperties? fibriCheckViewProperties,
     Function? onFingerDetected,
     Function(double y, double v, double stdDevY)? onFingerRemoved,
@@ -47,7 +47,7 @@ class FibriCheckView extends StatefulWidget {
     Function? onMovementDetected,
     Function(Map<String, dynamic> measurement)? onMeasurementProcessed,
     Function(String message)? onMeasurementError,
-  }) : super(key: key) {
+  }) {
     _fibriCheckViewProperties =
         fibriCheckViewProperties ?? FibriCheckViewProperties();
 
@@ -124,8 +124,8 @@ class FibriCheckViewState extends State<FibriCheckView>
   String _channelId = "";
   final Map<String, dynamic> _creationParams = <String, dynamic>{};
 
-  FibriCheckViewEventController? _fibriCheckViewEventController;
-  FibriCheckViewMethodController? _fibriCheckViewMethodController;
+  late FibriCheckViewEventController _fibriCheckViewEventController;
+  late FibriCheckViewMethodController _fibriCheckViewMethodController;
 
   @override
   void initState() {
@@ -173,7 +173,7 @@ class FibriCheckViewState extends State<FibriCheckView>
     WidgetsBinding.instance.removeObserver(this);
 
     if (defaultTargetPlatform == TargetPlatform.iOS) {
-      _fibriCheckViewMethodController!.resetModule();
+      _fibriCheckViewMethodController.resetModule();
     }
 
     super.dispose();
@@ -181,7 +181,7 @@ class FibriCheckViewState extends State<FibriCheckView>
 
   Future<void> _stopNativeSideAndResetTheChannel() async {
     // Let's be sure that the FibriChecker is stopped !
-    await _fibriCheckViewMethodController?.resetModule();
+    await _fibriCheckViewMethodController.resetModule();
 
     _setupChannelId();
   }
@@ -189,6 +189,7 @@ class FibriCheckViewState extends State<FibriCheckView>
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
+      case AppLifecycleState.hidden:
       case AppLifecycleState.detached:
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:
@@ -219,16 +220,12 @@ class FibriCheckViewState extends State<FibriCheckView>
 
     await _setupProperties();
 
-    _fibriCheckViewEventController!.subscribe();
-    _fibriCheckViewMethodController!.allPropertiesInitialized();
+    _fibriCheckViewEventController.subscribe();
+    _fibriCheckViewMethodController.allPropertiesInitialized();
   }
 
   Future<void> _setupProperties() async {
     final methodController = _fibriCheckViewMethodController;
-
-    if (methodController == null) {
-      return;
-    }
 
     await methodController.setGraphBackgroundColor(graphBackgroundColor);
     await methodController.setDrawGraph(drawGraph);

@@ -35,7 +35,7 @@ public class FlutterFibriListener implements EventChannel.StreamHandler, IFibriL
     private static final String EVENT_MEASUREMENT_PROCESSED = "onMeasurementProcessed";
 
     private EventChannel.EventSink events;
-    private SampleReadyCallBack sampleReadyCallBack;
+    private final SampleReadyCallBack sampleReadyCallBack;
 
     FlutterFibriListener(SampleReadyCallBack sampleReadyCallBack) {
         this.sampleReadyCallBack = sampleReadyCallBack;
